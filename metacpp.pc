@@ -1,0 +1,7 @@
+prefix=/usr/local
+includedir=${prefix}/include
+
+Name: metacpp
+Description: c++ metadata for serialization
+Version: 0.0.1
+Cflags: -I${includedir} -std=c++17
