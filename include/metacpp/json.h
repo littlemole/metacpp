@@ -164,6 +164,12 @@ void toJson(const char* name, std::vector<T>& from, Json::Value& to)
 
 inline void fromJson(const char* name, const Json::Value& from, std::string& t)
 {
+	if(!name)
+	{
+		t = from.asString();
+		return;
+	}
+
 	if (from.isMember(name))
 	{
 		t = from[name].asString();
@@ -172,6 +178,11 @@ inline void fromJson(const char* name, const Json::Value& from, std::string& t)
 
 inline void fromJson(const char* name, const Json::Value& from, int& t)
 {
+	if(!name)
+	{
+		t = from.asInt();
+		return;
+	}
 	if (from.isMember(name))
 	{
 		t = from[name].asInt();
@@ -180,6 +191,12 @@ inline void fromJson(const char* name, const Json::Value& from, int& t)
 
 inline void fromJson(const char* name, const Json::Value& from, unsigned int& t)
 {
+	if(!name)
+	{
+		t = from.asUInt();
+		return;
+	}
+
 	if (from.isMember(name))
 	{
 		t = from[name].asUInt();
@@ -188,6 +205,11 @@ inline void fromJson(const char* name, const Json::Value& from, unsigned int& t)
 
 inline void fromJson(const char* name, const Json::Value& from, double& t)
 {
+	if(!name)
+	{
+		t = from.asDouble();
+		return;
+	}
 	if (from.isMember(name))
 	{
 		t = from[name].asDouble();
@@ -196,6 +218,11 @@ inline void fromJson(const char* name, const Json::Value& from, double& t)
 
 inline void fromJson(const char* name, const Json::Value& from, float& t)
 {
+	if(!name)
+	{
+		t = from.asFloat();
+		return;
+	}
 	if (from.isMember(name))
 	{
 		t = from[name].asFloat();
@@ -204,6 +231,12 @@ inline void fromJson(const char* name, const Json::Value& from, float& t)
 
 inline void fromJson(const char* name, const Json::Value& from, bool& t)
 {
+	if(!name)
+	{
+		t = from.asBool();
+		return;
+	}
+
 	if (from.isMember(name))
 	{
 		t = from[name].asBool();
@@ -212,6 +245,12 @@ inline void fromJson(const char* name, const Json::Value& from, bool& t)
 
 inline void fromJson(const char* name, const Json::Value& from, long long& t)
 {
+	if(!name)
+	{
+		t = from.asInt64();
+		return;
+	}
+
 	if (from.isMember(name))
 	{
 		t = from[name].asInt64();
@@ -220,6 +259,12 @@ inline void fromJson(const char* name, const Json::Value& from, long long& t)
 
 inline void fromJson(const char* name, const Json::Value& from, unsigned long long& t)
 {
+	if(!name)
+	{
+		t = from.asUInt64();
+		return;
+	}
+
 	if (from.isMember(name))
 	{
 		t = from[name].asUInt64();
@@ -228,6 +273,12 @@ inline void fromJson(const char* name, const Json::Value& from, unsigned long lo
 
 inline void fromJson(const char* name, const Json::Value& from, char& t)
 {
+	if(!name)
+	{
+		t = from.asInt();
+		return;
+	}
+
 	if (from.isMember(name))
 	{
 		t = from[name].asInt();
@@ -236,6 +287,11 @@ inline void fromJson(const char* name, const Json::Value& from, char& t)
 
 inline void fromJson(const char* name, const Json::Value& from, unsigned char& t)
 {
+	if(!name)
+	{
+		t = from.asInt();
+		return;
+	}
 	if (from.isMember(name))
 	{
 		t = from[name].asInt();
@@ -244,6 +300,11 @@ inline void fromJson(const char* name, const Json::Value& from, unsigned char& t
 
 inline void fromJson(const char* name, const Json::Value& from, Json::Value& to)
 {
+	if(!name)
+	{
+		to = from;
+		return;
+	}
 	if (from.isMember(name))
 	{
 		to = from[name];

@@ -319,6 +319,58 @@ TEST_F(XmlTest, xmlVector)
 
 } 
  
+
+
+struct User
+{
+public:
+
+	std::string username;
+	std::string login;
+	std::string pwd;
+	std::vector<std::string> tags;
+};
+
+template<>
+struct meta::Data<User>
+{
+        static constexpr auto meta()
+        {
+                return meta::data<User>(
+					entity_root("user"),
+					"username", &User::username,
+					"login", &User::login,
+					"pwd", &User::pwd,
+					"tags", &User::tags
+				);
+		}
+};
+
+
+
+TEST_F(XmlTest, toXml) 
+{
+	User user{ "mike", "littlemole", "secret", { "one", "two", "three"} };
+
+	auto xml = toXml(user);
+	std::string s = xml->toString();
+
+	std::cout << s << std::endl;
+
+	EXPECT_EQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<user><username>mike</username><login>littlemole</login><pwd>secret</pwd><tags>one</tags><tags>two</tags><tags>three</tags></user>",s);
+
+	User other;
+	fromXml(xml,other);
+
+	EXPECT_EQ("mike",other.username);
+	EXPECT_EQ("littlemole",other.login);
+	EXPECT_EQ("secret",other.pwd);
+
+	EXPECT_EQ("one",other.tags[0]);
+	EXPECT_EQ("two",other.tags[1]);
+	EXPECT_EQ("three",other.tags[2]);
+}
+
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);

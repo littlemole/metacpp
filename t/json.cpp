@@ -159,6 +159,59 @@ TEST_F(JsonTest, jsonVector)
 
 }
 
+
+
+struct User
+{
+public:
+
+	std::string username;
+	std::string login;
+	std::string pwd;
+	std::vector<std::string> tags;
+};
+
+template<>
+struct meta::Data<User>
+{
+        static constexpr auto meta()
+        {
+                return meta::data<User>(
+					entity_root("user"),
+					"username", &User::username,
+					"login", &User::login,
+					"pwd", &User::pwd,
+					"tags", &User::tags
+				);
+		}
+};
+
+
+
+TEST_F(JsonTest, toJson) 
+{
+	User user{ "mike", "littlemole", "secret", { "one", "two", "three"} };
+	Json::Value json = toJson(user);
+
+	std::string s = JSON::flatten(json); 
+
+	std::cout << s << std::endl;
+
+	EXPECT_EQ("{\"user\":{\"login\":\"littlemole\",\"pwd\":\"secret\",\"tags\":[\"one\",\"two\",\"three\"],\"username\":\"mike\"}}",s);
+
+	User other;
+	fromJson(json,other);
+
+	EXPECT_EQ("mike",other.username);
+	EXPECT_EQ("littlemole",other.login);
+	EXPECT_EQ("secret",other.pwd);
+
+	EXPECT_EQ("one",other.tags[0]);
+	EXPECT_EQ("two",other.tags[1]);
+	EXPECT_EQ("three",other.tags[2]);
+}
+
+
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
