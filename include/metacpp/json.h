@@ -442,6 +442,11 @@ inline Json::Value toJson(const Json::Value& t)
 	return t;
 }
 
+inline Json::Value toJson(Json::Value& t)
+{
+	return t;
+}
+
 template<class T>
 Json::Value toJson(const std::vector<T>& t)
 {
