@@ -61,7 +61,7 @@ struct meta::Data<TestObj>
 {
 	static constexpr auto meta()
 	{
-		return meta::data<TestObj>(
+		return meta::data(
 			getter_setter("x", &TestObj::get_x, &TestObj::set_x),
 			getter_setter("txt", &TestObj::get_txt, &TestObj::set_txt)
 		);

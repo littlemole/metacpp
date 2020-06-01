@@ -54,7 +54,7 @@ struct meta::Data<TestObj>
 {
 	static constexpr auto meta()
 	{
-		return meta::data<TestObj>(
+		return meta::data(
 			//entity_root("TEST"),
 			member("x", &TestObj::x),
 			"txt", &TestObj::txt
@@ -72,7 +72,7 @@ public:
 
 	constexpr static auto meta() 
 	{
-		return meta::data<ArrayTest>(
+		return meta::data(
 			meta::entity_root("huhu"),
 			meta::member("test", &ArrayTest::test)
 		);
@@ -87,7 +87,7 @@ public:
 
 	constexpr static auto meta()
 	{
-		return meta::data<std::vector<TestObj>>(
+		return meta::data(
 			meta::entity_root("vector")
 		);
 	}
@@ -176,7 +176,7 @@ struct meta::Data<User>
 {
         static constexpr auto meta()
         {
-                return meta::data<User>(
+                return meta::data(
 					entity_root("user"),
 					"username", &User::username,
 					"login", &User::login,

@@ -325,8 +325,7 @@ namespace impl {
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 
-	template<class T>
-	constexpr auto data()
+	inline constexpr std::tuple<> data()
 	{
 		return std::tuple<>();
 	}
@@ -346,43 +345,43 @@ namespace impl {
 	template<class T, class M, class ... Args>
 	constexpr auto data(impl::MemFun<M> m, Args ... args);
 
-	template<class T, class ... Args>
+	template<class ... Args>
 	constexpr auto data(impl::EntityRoot m, Args ... args);
 
 	template<class T, class M, class ... Args>
 	constexpr auto data(const char* n, M T::* m, Args ... args)
 	{
-		return std::tuple_cat(std::make_tuple(meta::member(n, m)), data<T>(args...));
+		return std::tuple_cat(std::make_tuple(meta::member(n, m)), data(args...));
 	}
 
 	template<class T, class M, class ... Args>
 	constexpr auto data(impl::Member<T,M> m, Args ... args)
 	{
-		return std::tuple_cat(std::make_tuple(m),  data<T>(args...));
+		return std::tuple_cat(std::make_tuple(m),  data(args...));
 	}
 
 	template<class T, class M1, class M2, class ... Args>
 	constexpr auto data(impl::GetterSetter<T, M1,M2> m, Args ... args)
 	{
-		return std::tuple_cat(std::make_tuple(m),  data<T>(args...));
+		return std::tuple_cat(std::make_tuple(m),  data(args...));
 	}
 
 	template<class T, class M1, class M2, class ... Args>
 	constexpr auto data(impl::GetterSetterConst<T, M1, M2> m, Args ... args)
 	{
-		return std::tuple_cat(std::make_tuple(m), data<T>(args...));
+		return std::tuple_cat(std::make_tuple(m), data(args...));
 	}
 
-	template<class T, class M, class ... Args>
+	template<class M, class ... Args>
 	constexpr auto data(impl::MemFun<M> m, Args ... args)
 	{
-		return std::tuple_cat(std::make_tuple(m),  data<T>(args...));
+		return std::tuple_cat(std::make_tuple(m),  data(args...));
 	}
 
-	template<class T, class ... Args>
+	template<class ... Args>
 	constexpr auto data(impl::EntityRoot m, Args ... args)
 	{
-		return std::tuple_cat(std::make_tuple(m),  data<T>(args...));
+		return std::tuple_cat(std::make_tuple(m),  data(args...));
 	}
 
 

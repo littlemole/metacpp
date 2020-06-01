@@ -73,7 +73,7 @@ struct meta::Data<TestObj>
 {
 	static constexpr auto meta()
 	{
-		return meta::data<TestObj>(
+		return meta::data(
 			entity_root("TEST", xmlns("myns","http://somewhere.com/")),
 			member("x", &TestObj::x, attribute("myns","http://somewhere.com/")),
 			"txt", &TestObj::txt
@@ -111,7 +111,7 @@ public:
 	constexpr static auto meta() 
 	{
 		using namespace meta;
-		return data<Operation>(
+		return data(
 			entity_root("operation"),
 			mem_fun("test", &Operation::test),
 			mem_fun("test2", &Operation::test2),
@@ -128,7 +128,7 @@ public:
 
 	constexpr static auto meta() 
 	{
-		return meta::data<SingleTest>(
+		return meta::data(
 			meta::entity_root("huhu"),
 			meta::member("test", &SingleTest::test)
 		);
@@ -143,7 +143,7 @@ public:
 
 	constexpr static auto meta()
 	{
-		return meta::data<std::vector<TestObj>>(
+		return meta::data(
 			meta::entity_root("vector")
 		);
 	}
@@ -238,7 +238,7 @@ TEST_F(BasicTest, simpleConst)
 
 int tester()
 {
-
+	return 0;
 }
 
 TEST_F(BasicTest, simpleConstExpr)

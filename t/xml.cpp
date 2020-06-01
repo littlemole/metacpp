@@ -54,7 +54,7 @@ struct meta::Data<TestObj>
 {
 	static constexpr auto meta()
 	{
-		return meta::data<TestObj>(
+		return meta::data(
 			entity_root("TEST"),
 			member("x", &TestObj::x),
 //            meta::member("txt", &TestObj::txt, meta::attribute())
@@ -82,7 +82,7 @@ public:
 
     static constexpr auto meta()
     {
-        return meta::data<TestObj2>(
+        return meta::data(
             meta::entity_root("TEST"),
             meta::member("x", &TestObj2::x, meta::attribute()),
 			//meta::member("txt", &TestObj2::txt, meta::attribute())
@@ -100,7 +100,7 @@ public:
 
     static constexpr auto meta()
     {
-        return meta::data<TestObj3>(
+        return meta::data(
             meta::entity_root("TEST", meta::xmlns(/*"myns",*/"urn:myawesome.ns")),
             meta::member("x", &TestObj3::x, meta::xmlns("o","urn:other.ns")),
             meta::member("txt", &TestObj3::txt, meta::xmlns("p","urn:myawesome.ns"))
@@ -117,7 +117,7 @@ public:
 
     static constexpr auto meta()
     {
-        return meta::data<TestObj4>(
+        return meta::data(
             meta::entity_root("TEST", meta::xmlns("myns","urn:myawesome.ns")),
             meta::member("x", &TestObj4::x, meta::attribute("o","urn:other.ns")),
             meta::member("txt", &TestObj4::txt, meta::xmlns("p","urn:myawesome.ns"))
@@ -133,7 +133,7 @@ public:
 
     static constexpr auto meta()
     {
-        return meta::data<TestObj5>(
+        return meta::data(
             meta::entity_root("TEST", meta::xmlns(/*"myns",*/"urn:myawesome.ns")),
             meta::member("x", &TestObj5::x, meta::xmlns("o","urn:other.ns")),
             meta::member("txt", &TestObj5::txt, meta::xmlns("p","urn:myprivate.ns"))
@@ -150,7 +150,7 @@ public:
 
 	constexpr static auto meta() 
 	{
-		return meta::data<ArrayTest>(
+		return meta::data(
 			meta::entity_root("huhu"),
 			meta::member("test", &ArrayTest::test)
 		);
@@ -165,7 +165,7 @@ public:
 
 	constexpr static auto meta()
 	{
-		return meta::data<std::vector<TestObj>>(
+		return meta::data(
 			meta::entity_root("vector")
 		);
 	}
@@ -320,14 +320,35 @@ TEST_F(XmlTest, xmlVector)
 } 
  
 
-
-struct User
+struct Login
 {
 public:
 
-	std::string username;
+	Login()
+	{}
+
+	Login(const std::string& l, const std::string& p)
+	: login(l),pwd(p)
+	{}
+
 	std::string login;
 	std::string pwd;
+};
+
+
+struct User : public Login
+{
+public:
+
+	User()
+	{}
+
+	User(const std::string& n, const std::string& l, 
+		 const std::string& p, std::vector<std::string> t)
+	: Login(l,p), username(n), tags(t)
+	{}
+
+	std::string username;
 	std::vector<std::string> tags;
 };
 
@@ -336,7 +357,7 @@ struct meta::Data<User>
 {
         static constexpr auto meta()
         {
-                return meta::data<User>(
+                return meta::data(
 					entity_root("user"),
 					"username", &User::username,
 					"login", &User::login,
