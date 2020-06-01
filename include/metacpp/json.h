@@ -394,11 +394,11 @@ Json::Value toJson( const T& t)
 {
 	Json::Value result(Json::objectValue);
 
-	const char* root = meta::entity_root<T>();
+	auto root = meta::entity_root<T>();
 
-	if (root)
+	if (root.name)
 	{
-		impl::toJson(root, t, result);
+		impl::toJson(root.name, t, result);
 	}
 	else
 	{
