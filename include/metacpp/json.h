@@ -511,7 +511,7 @@ template<class T>
 void fromJson(const std::string& from, T& t)
 {
 	Json::Value json = JSON::parse(from);
-	impl::fromJson(json, t);
+	fromJson(json, t);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
