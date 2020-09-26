@@ -122,10 +122,21 @@ inline void toJson(const char* name, std::string& from, Json::Value& to)
 	to[name] = from;
 }
 
+
+
+
+
+
+
+inline void toJson(const char* name, const long long int& from, Json::Value& to)
+{
+	to[name] = Json::UInt64(from);
+}
+
 template<class T >
 void toJson(const char* name, const T& from, Json::Value& to, typename std::enable_if<std::is_arithmetic<T>::value>::type* = nullptr)
 {
-	to[name] = from;
+	to[name] = Json::Value(from);
 }
 
 template<class T>

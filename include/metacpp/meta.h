@@ -149,7 +149,7 @@ namespace impl {
 		void set(T& t, const setter_value_t& m) const
 		{
 			if (!setter)
-				throw std::exception();
+				return;//throw std::exception();
 
 			(t.*setter)(m);
 		}
@@ -183,7 +183,7 @@ namespace impl {
 		void set(T& t, const setter_value_t& m) const
 		{
 			if (!setter)
-				throw std::exception();
+				return; //throw std::exception();
 
 			(t.*setter)(m);
 		}
