@@ -205,6 +205,37 @@ namespace impl {
 		}
 	};
 
+	template< class R, class T, class ... Args>
+	class MemFun<R(T,Args...)>
+	{
+	public:
+		const char* name = 0;
+		xmlns ns;
+
+		R(T::*member)(Args...) = nullptr;
+
+		R invoke(T& t, Args ... args)
+		{
+			return (t.*member)(args...);
+		}
+	};
+
+	template< class T, class ... Args>
+	class MemFun<void(T,Args...)>
+	{
+	public:
+		const char* name = 0;
+		xmlns ns;
+
+		void(T::*member)(Args...) = nullptr;
+
+		void invoke(T& t, Args ... args)
+		{
+			(t.*member)(args...);
+		}
+	};
+
+
 	class EntityRoot
 	{
 	public:
