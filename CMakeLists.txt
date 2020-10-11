@@ -97,10 +97,9 @@ message("+++++++++++++++++")
     pkg_check_modules(EXPAT REQUIRED expat)
     pkg_check_modules(PATEX REQUIRED patex)
 
-    set(BUILDFLAGS " ${FLAGS}")
+    set(LINKER_FLAGS " ${LINKER_FLAGS} ${JSONCPP_LDFLAGS}")
 
-    set(LIBS 
-		${GTEST_LIBRARIES} ${JSONCPP_LIBRARIES} ${PATEX_LIBRARIES} ${EXPAT_LIBRARIES} ${STDLIB} 
+    set(LIBS ${GTEST_LIBRARIES} ${JSONCPP_LIBRARIES} ${PATEX_LIBRARIES} ${EXPAT_LIBRARIES} ${STDLIB} 
 	)
 
 
@@ -108,6 +107,7 @@ ENDIF ()
 
 message("+++++++++++++++++")
 message("LIBS: ${LIBS}")
+message("LDFLAGS: ${LINKER_FLAGS}")
 message("+++++++++++++++++")
 
 
@@ -155,8 +155,13 @@ add_executable(XmlTests t/xml.cpp)
 
 target_link_libraries(Tests ${LIBS} ${BACKEND} ${OSLIBS} )
 target_link_libraries(SetterGetterTests ${LIBS} ${BACKEND} ${OSLIBS} )
-target_link_libraries(JsonTests ${LIBS} ${BACKEND} ${OSLIBS} )
-target_link_libraries(XmlTests ${LIBS} ${BACKEND} ${OSLIBS} )
+target_link_libraries(JsonTests  ${LIBS} ${BACKEND} ${OSLIBS} )
+target_link_libraries(XmlTests  ${LIBS} ${BACKEND} ${OSLIBS} )
+
+target_link_options(Tests PRIVATE ${JSONCPP_LDFLAGS})
+target_link_options(SetterGetterTests PRIVATE ${JSONCPP_LDFLAGS})
+target_link_options(JsonTests PRIVATE ${JSONCPP_LDFLAGS})
+target_link_options(XmlTests PRIVATE ${JSONCPP_LDFLAGS})
 
 ############################################
 # run tests
