@@ -69,18 +69,20 @@ message("+++++++++++++++++")
 	if(${CMAKE_BUILD_TYPE} MATCHES "Release")
 		find_library(JSONCPP_LIBRARY NAMES jsoncpp)
 		find_library(EXPAT_LIBRARY NAMES expat.lib)
+		find_library(PATEX_LIBRARY NAMES patex)
 
-		set(LIBS debug ${CMAKE_PROJECT_NAME} optimized ${CMAKE_PROJECT_NAME} 
-			${JSONCPP_LIBRARY} 
+		set(LIBS ${PATEX_LIBRARY}
+            ${JSONCPP_LIBRARY} 
 			${EXPAT_LIBRARY}
 			${LIBS} 
 		)
     else()
 		find_library(JSONCPP_LIBRARY NAMES jsoncpp)
 		find_library(EXPAT_LIBRARY NAMES expat.lib)
+		find_library(PATEX_LIBRARY NAMES patexd)
 
-
-		set(LIBS debug ${CMAKE_PROJECT_NAME} 
+message("PATEX: ${PATEX_LIBRARY}")
+		set(LIBS ${PATEX_LIBRARY}
 			${JSONCPP_LIBRARY} 
 			${EXPAT_LIBRARY}
 			${LIBS}
@@ -125,6 +127,8 @@ set(CMAKE_CXX_FLAGS  		"${CMAKE_CXX_FLAGS} ${BUILDFLAGS}")
 ############################################
 
 include_directories(include)
+include_directories(${EXPAT_INCLUDE_DIR})
+include_directories(${GTEST_INCLUDE_DIR})
 
 ############################################
 # sources
