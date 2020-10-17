@@ -68,7 +68,7 @@ message("+++++++++++++++++")
 
 	if(${CMAKE_BUILD_TYPE} MATCHES "Release")
 		find_library(JSONCPP_LIBRARY NAMES jsoncpp)
-		find_library(EXPAT_LIBRARY NAMES expat.lib)
+		find_library(EXPAT_LIBRARY NAMES libexpat)
 		find_library(PATEX_LIBRARY NAMES patex)
 
 		set(LIBS ${PATEX_LIBRARY}
@@ -78,7 +78,7 @@ message("+++++++++++++++++")
 		)
     else()
 		find_library(JSONCPP_LIBRARY NAMES jsoncpp)
-		find_library(EXPAT_LIBRARY NAMES expat.lib)
+		find_library(EXPAT_LIBRARY NAMES libexpat)
 		find_library(PATEX_LIBRARY NAMES patexd)
 
 message("PATEX: ${PATEX_LIBRARY}")
