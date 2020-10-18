@@ -40,7 +40,7 @@ set(FLAGS "")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(STDLIB "c++abi")
-    set(LINKERFLAGS "-stdlib=libc++ -fcoroutines-ts  -std=c++14")
+    set(LINKERFLAGS "-stdlib=libc++ -fcoroutines-ts  -std=c++17")
     set(FLAGS "-stdlib=libc++ -fcoroutines-ts -D_RESUMABLE_FUNCTIONS_SUPPORTED")
 endif()
 
