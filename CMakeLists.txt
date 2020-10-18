@@ -41,7 +41,7 @@ set(FLAGS "")
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(STDLIB "c++abi")
     set(LINKERFLAGS "-stdlib=libc++ -fcoroutines-ts  -std=c++17")
-    set(FLAGS "-stdlib=libc++ -fcoroutines-ts -D_RESUMABLE_FUNCTIONS_SUPPORTED")
+    set(FLAGS "-std=c++17 -stdlib=libc++ -fcoroutines-ts -D_RESUMABLE_FUNCTIONS_SUPPORTED")
 endif()
 
 ############################################
@@ -93,6 +93,7 @@ message("PATEX: ${PATEX_LIBRARY}")
  ELSEIF (UNIX)
 
     set(OSLIBS "pthread")
+	set(BUILDFLAGS "${FLAGS}")
 
     find_package(PkgConfig)
     pkg_check_modules(JSONCPP REQUIRED jsoncpp)
@@ -108,6 +109,7 @@ message("PATEX: ${PATEX_LIBRARY}")
 ENDIF ()
 
 message("+++++++++++++++++")
+message("BUILDFLAGS: ${BUILDFLAGS}")
 message("LIBS: ${LIBS}")
 message("LDFLAGS: ${LINKER_FLAGS}")
 message("+++++++++++++++++")
