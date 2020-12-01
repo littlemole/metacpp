@@ -102,6 +102,8 @@ namespace impl {
 	class Member
 	{
 	public:
+		static constexpr bool is_member = true;
+
 		const char* name = 0;
 		xmlns ns;
 		M T::* member = nullptr;
@@ -125,6 +127,7 @@ namespace impl {
 	class GetterSetter
 	{
 	public:
+		static constexpr bool is_member = true;
 
 		typedef M1(T::* getter_t)();
 		typedef void (T::* setter_t)(M2);
@@ -159,6 +162,7 @@ namespace impl {
 	class GetterSetterConst
 	{
 	public:
+		static constexpr bool is_member = true;
 
 		typedef M1(T::* getter_t)() const;
 		typedef void (T::* setter_t)(M2);
@@ -193,6 +197,12 @@ namespace impl {
 	class MemFun
 	{
 	public:
+	
+		static constexpr bool is_member = false;
+
+		using getter_value_t = int;
+		using setter_value_t = int;
+
 		const char* name = 0;
 		xmlns ns;
 
@@ -202,6 +212,17 @@ namespace impl {
 		auto invoke(T& t, Args ... args)
 		{
 			return (t.*member)(args...);
+		}
+
+		template<class T>
+		getter_value_t get(const T& t) const
+		{
+			return 0;
+		}
+
+		template<class T>
+		void set(T& t, const setter_value_t& m) const
+		{
 		}
 	};
 
@@ -373,7 +394,7 @@ namespace impl {
 	template<class T, class M1, class M2, class ... Args>
 	constexpr auto data(impl::GetterSetterConst<T, M1, M2> m, Args ... args);
 
-	template<class T, class M, class ... Args>
+	template<class M, class ... Args>
 	constexpr auto data(impl::MemFun<M> m, Args ... args);
 
 	template<class ... Args>
