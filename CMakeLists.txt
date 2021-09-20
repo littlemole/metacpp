@@ -25,9 +25,10 @@ endif()
 ############################################
 # basic dependecies
 ############################################
-
+option(WITH_TEST "run tests (default:off)" OFF)
+if(WITH_TEST)
 find_package(GTest REQUIRED)
-
+endif()
 
 ############################################
 # clang support
@@ -47,7 +48,7 @@ endif()
 ############################################
 # OS support (Linux/Windows)
 ############################################
-
+if(WITH_TEST)
 IF (WIN32)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -107,6 +108,7 @@ message("PATEX: ${PATEX_LIBRARY}")
 
 
 ENDIF ()
+endif()
 
 message("+++++++++++++++++")
 message("BUILDFLAGS: ${BUILDFLAGS}")
@@ -129,9 +131,10 @@ set(CMAKE_CXX_FLAGS  		"${CMAKE_CXX_FLAGS} ${BUILDFLAGS}")
 ############################################
 
 include_directories(include)
+if(WITH_TEST)
 include_directories(${EXPAT_INCLUDE_DIR})
 include_directories(${GTEST_INCLUDE_DIR})
-
+endif()
 ############################################
 # sources
 ############################################
@@ -145,6 +148,7 @@ file(GLOB_RECURSE HEADERS "include/${CMAKE_PROJECT_NAME}/*.h")
 
 #add_library(${CMAKE_PROJECT_NAME}  STATIC ${SOURCES})
 
+if(WITH_TEST)
 
 ############################################
 # tests
@@ -173,11 +177,13 @@ target_link_options(XmlTests PRIVATE ${JSONCPP_LDFLAGS})
 # run tests
 ############################################
 
+	add_test(NAME Tests COMMAND Tests)
+	add_test(NAME SetterGetterTests COMMAND SetterGetterTests)
+	add_test(NAME JsonTests COMMAND JsonTests)
+	add_test(NAME XmlTests COMMAND XmlTests)	
+else()
+endif()
 
-add_test(NAME Tests COMMAND Tests)
-add_test(NAME SetterGetterTests COMMAND SetterGetterTests)
-add_test(NAME JsonTests COMMAND JsonTests)
-add_test(NAME XmlTests COMMAND XmlTests)
  
 ############################################
 # install rules
