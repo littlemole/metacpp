@@ -3,5 +3,5 @@ includedir=${prefix}/include
 
 Name: metacpp
 Description: c++ metadata for serialization
-Version: 0.0.2
-Cflags: -I${includedir} -std=c++20
+Version: 0.0.1
+Cflags: -I${includedir} -std=c++17
