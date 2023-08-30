@@ -5,11 +5,11 @@ PKG_INC=$(shell pkg-config jsoncpp patex expat --cflags)
 PKG_LIB=$(shell pkg-config jsoncpp patex expat --libs)
 
 # if not g++ we assume clang++
-DEFAULT_LIBS = -stdlib=libc++ -fcoroutines-ts  -lc++abi -std=c++14 ${PKG_LIB}
-DEFAULT_OPTS = -std=c++17 -stdlib=libc++ -fcoroutines-ts -D_RESUMABLE_FUNCTIONS_SUPPORTED  ${PKG_INC}
+DEFAULT_LIBS = -stdlib=libc++ -fcoroutines-ts  -lc++abi -std=c++20 ${PKG_LIB}
+DEFAULT_OPTS = -std=c++20 -stdlib=libc++ -fcoroutines-ts -D_RESUMABLE_FUNCTIONS_SUPPORTED  ${PKG_INC}
 
 ifeq ($(CXX),g++)
-DEFAULT_OPTS = -std=c++17 ${PKG_INC}
+DEFAULT_OPTS = -std=c++20 ${PKG_INC}
 DEFAULT_LIBS = ${PKG_LIB}
 endif
 

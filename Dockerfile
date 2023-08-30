@@ -1,5 +1,5 @@
 # This is a comment
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 MAINTAINER me <little.mole@oha7.org>
 
 # std dependencies
