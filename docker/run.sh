@@ -26,7 +26,7 @@ else
 
     mkdir build
     cd build
-    cmake .. -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_FLAGS=$FLAGS
+    cmake .. -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_FLAGS=$FLAGS -DCMAKE_CXX_STANDARD=20
     make 
     make test
     make install

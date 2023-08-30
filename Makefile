@@ -44,7 +44,7 @@ remove:
 	-rm $(DESTDIR)/$(PREFIX)/lib/pkgconfig/$(LIBNAME).pc
 	
 image: 
-	docker build -t $(IMAGE) . -fDockerfile  --build-arg CXX=$(CXX)
+	docker build -t $(IMAGE) . -fDockerfile  --build-arg CXX=$(CXX) --build-arg BUILDCHAIN=$(BUILDCHAIN)
 
 
 # docker stable testing environment
@@ -56,7 +56,7 @@ run: image-remove image
 	docker run --name $(LIBNAME) -d -e CXX=$(CXX) -v "$(PWD):/opt/workspace/$(LIBNAME)"  $(IMAGE)
                                         
 bash: image-remove image
-	docker run --name $(LIBNAME) -ti -e CXX=$(CXX) -v "$(PWD):/opt/workspace/$(LIBNAME)"  $(IMAGE) bash
+	docker run --name $(LIBNAME) -ti -e CXX=$(CXX) -e BUILDCHAIN=$(BUILDCHAIN) -v "$(PWD):/opt/workspace/$(LIBNAME)"  $(IMAGE) bash
 
 stop: 
 	-docker stop $(LIBNAME)
