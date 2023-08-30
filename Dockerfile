@@ -12,16 +12,9 @@ clang libc++-dev libc++abi-dev libexpat-dev
 ARG CXX
 ENV CXX=${CXX}
 
-# compile gtest with given compiler
-RUN cd /usr/src/gtest && \
-  if [ "$CXX" = "g++" ] ; then \
-    cmake .; \
-  else \
-  cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_FLAGS="-std=c++14 -stdlib=libc++" . ; \
-  fi && \
-  make && \
-  make install && \
-  ln -s /usr/src/gtest/libgtest.a /usr/lib/libgtest.a
+ADD docker/gtest.sh /usr/local/bin/gtest.sh
+RUN /usr/local/bin/gtest.sh
+
 
 RUN cd /usr/local/src && git clone https://github.com/littlemole/patex
 RUN cd /usr/local/src/patex && make clean && make -e test && make -e install
@@ -37,7 +30,7 @@ RUN echo -e $CXX $BUILDCHAIN
 RUN /usr/local/src/metacpp/docker/jsoncpp.sh
 
 
-#CMD /bin/bash
+##CMD /bin/bash
 RUN "/usr/local/src/metacpp/docker/run.sh"
 
-#CMD ["/bin/bash", "-c", "/user/local/src/metacpp/docker/run.sh"]
+##CMD ["/bin/bash", "-c", "/user/local/src/metacpp/docker/run.sh"]
