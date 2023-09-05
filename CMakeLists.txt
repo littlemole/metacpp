@@ -25,7 +25,7 @@ endif()
 ############################################
 # basic dependecies
 ############################################
-option(WITH_TEST "run tests (default:off)" OFF)
+option(WITH_TEST "run tests (default:on)" ON)
 if(WITH_TEST)
 find_package(GTest REQUIRED)
 endif()
