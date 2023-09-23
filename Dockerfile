@@ -7,7 +7,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential g++ \
 libgtest-dev git pkg-config valgrind sudo joe wget \
-clang libc++-dev libc++abi-dev libexpat-dev cmake
+clang libc++-dev libc++abi-dev libexpat-dev cmake uuid-dev
 
 ARG CXX
 ENV CXX=${CXX}
@@ -31,6 +31,7 @@ RUN /usr/local/bin/jsoncpp.sh
 
 RUN mkdir -p /usr/local/src/metacpp
 ADD . /usr/local/src/metacpp
+
 
 RUN "/usr/local/src/metacpp/docker/run.sh"
 
