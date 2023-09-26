@@ -41,7 +41,7 @@ set(FLAGS "")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(STDLIB "c++abi")
-    set(LINKERFLAGS "-stdlib=libc++ -fcoroutines-ts  -std=c++20")
+    set(LINKERFLAGS "-stdlib=libc++ -fcoroutines-ts ")
     set(FLAGS "-std=c++20 -stdlib=libc++ -fcoroutines-ts -D_RESUMABLE_FUNCTIONS_SUPPORTED")
 endif()
 
@@ -59,37 +59,23 @@ message("+++++++++++++++++")
 message("${CMAKE_BUILD_TYPE}")
 message("+++++++++++++++++")
 
+	find_package(expat CONFIG REQUIRED)
+
 	set(OSLIBS "Ws2_32" "Rpcrt4" "Shlwapi")
 	set(BUILDFLAGS "-await ${FLAGS}")
 
-	find_library(LIBEVENT_LIBRARY NAMES event)
-	find_library(CURL_LIBRARY NAMES libcurl)
-	find_library(NG2HTTP_LIBRARY NAMES nghttp2)
-	set(LIBS ${GTEST_LIBRARIES} ${OPENSSL_LIBRARIES} ${STDLIB}  )
+	find_library(JSONCPP_LIBRARY NAMES jsoncpp)
 
-	if(${CMAKE_BUILD_TYPE} MATCHES "Release")
-		find_library(JSONCPP_LIBRARY NAMES jsoncpp)
-		find_library(EXPAT_LIBRARY NAMES libexpat)
-		find_library(PATEX_LIBRARY NAMES patex)
+	set(LIBS ${GTEST_LIBRARIES}  ${EXPAT_LIBRARIES} ${JSONCPP_LIBRARY}  ${STDLIB}  )
 
-		set(LIBS ${PATEX_LIBRARY}
-            ${JSONCPP_LIBRARY} 
-			${EXPAT_LIBRARY}
-			${LIBS} 
-		)
-    else()
-		find_library(JSONCPP_LIBRARY NAMES jsoncpp)
-		find_library(EXPAT_LIBRARY NAMES libexpat)
-		find_library(PATEX_LIBRARY NAMES patexd)
+	if(${CMAKE_BUILD_TYPE} MATCHES "(Release)|(RelWithDebInfo)")
 
-message("PATEX: ${PATEX_LIBRARY}")
-		set(LIBS ${PATEX_LIBRARY}
-			${JSONCPP_LIBRARY} 
-			${EXPAT_LIBRARY}
-			${LIBS}
-		)
+		find_library(PATEX_LIBRARY NAMES patex.lib   NO_CACHE)
+		set(LIBS ${PATEX_LIBRARY} ${LIBS} )
+        else()
+		find_library(PATEX_LIBRARY NAMES patexd.lib PATH_SUFFIXES "debug/lib")
+		set(LIBS ${PATEX_LIBRARY} ${LIBS})
 	endif()
-
 
  ELSEIF (UNIX)
 
@@ -103,9 +89,7 @@ message("PATEX: ${PATEX_LIBRARY}")
 
     set(LINKER_FLAGS " ${LINKER_FLAGS} ${JSONCPP_LDFLAGS}")
 
-    set(LIBS ${GTEST_LIBRARIES} ${JSONCPP_LIBRARIES} ${PATEX_LIBRARIES} ${EXPAT_LIBRARIES} ${STDLIB} 
-	)
-
+    set(LIBS ${GTEST_LIBRARIES} ${JSONCPP_LIBRARIES} ${PATEX_LIBRARIES} ${EXPAT_LIBRARIES} ${STDLIB} )
 
 ENDIF ()
 endif()
