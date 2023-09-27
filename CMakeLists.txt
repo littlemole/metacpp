@@ -118,8 +118,8 @@ set(CMAKE_CXX_FLAGS  		"${CMAKE_CXX_FLAGS} ${BUILDFLAGS}")
 
 include_directories(include)
 if(WITH_TEST)
-include_directories(${EXPAT_INCLUDE_DIR})
-include_directories(${GTEST_INCLUDE_DIR})
+#include_directories(${EXPAT_INCLUDE_DIR})
+#include_directories(${GTEST_INCLUDE_DIR})
 endif()
 ############################################
 # sources
