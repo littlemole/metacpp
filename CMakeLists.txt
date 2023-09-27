@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.22)
 cmake_policy(SET CMP0054 NEW)
 project(metacpp)
 include(CTest)
+set(VERSION 0.0.5)
 
 ############################################
 # c++ std
@@ -60,22 +61,23 @@ message("${CMAKE_BUILD_TYPE}")
 message("+++++++++++++++++")
 
 	find_package(expat CONFIG REQUIRED)
+	find_package(patex CONFIG REQUIRED)
 
 	set(OSLIBS "Ws2_32" "Rpcrt4" "Shlwapi")
 	set(BUILDFLAGS "-await ${FLAGS}")
 
 	find_library(JSONCPP_LIBRARY NAMES jsoncpp)
 
-	set(LIBS ${GTEST_LIBRARIES}  ${EXPAT_LIBRARIES} ${JSONCPP_LIBRARY}  ${STDLIB}  )
+	set(LIBS patex ${GTEST_LIBRARIES}  ${EXPAT_LIBRARIES} ${JSONCPP_LIBRARY}  ${STDLIB}  )
 
-	if(${CMAKE_BUILD_TYPE} MATCHES "(Release)|(RelWithDebInfo)")
-
-		find_library(PATEX_LIBRARY NAMES patex.lib   NO_CACHE)
-		set(LIBS ${PATEX_LIBRARY} ${LIBS} )
-        else()
-		find_library(PATEX_LIBRARY NAMES patexd.lib PATH_SUFFIXES "debug/lib")
-		set(LIBS ${PATEX_LIBRARY} ${LIBS})
-	endif()
+#	if(${CMAKE_BUILD_TYPE} MATCHES "(Release)|(RelWithDebInfo)")
+#
+#		find_library(PATEX_LIBRARY NAMES patex.lib   NO_CACHE)
+#		set(LIBS ${PATEX_LIBRARY} ${LIBS} )
+#       else()
+#		find_library(PATEX_LIBRARY NAMES patexd.lib PATH_SUFFIXES "debug/lib")
+#		set(LIBS ${PATEX_LIBRARY} ${LIBS})
+#	endif()
 
  ELSEIF (UNIX)
 
@@ -181,4 +183,20 @@ INSTALL( DIRECTORY "include/${CMAKE_PROJECT_NAME}/" DESTINATION "include/${CMAKE
 install(FILES ${CMAKE_PROJECT_NAME}.pc DESTINATION lib/pkgconfig)
 
 
+############################################
+# Create and install package configuration 
+# and version files.
+############################################
+
+configure_file(
+   ${metacpp_SOURCE_DIR}/metacpp-config.cmake.in
+   ${metacpp_BINARY_DIR}/metacpp-config.cmake @ONLY)
+
+configure_file(
+   ${metacpp_SOURCE_DIR}/metacpp-config-version.cmake.in
+   ${metacpp_BINARY_DIR}/metacpp-config-version.cmake @ONLY)
+
+install(FILES ${metacpp_BINARY_DIR}/metacpp-config.cmake
+         ${metacpp_BINARY_DIR}/metacpp-config-version.cmake
+         DESTINATION lib/metacpp-${VERSION})
 
