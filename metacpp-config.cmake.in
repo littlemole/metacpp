@@ -6,4 +6,4 @@ get_filename_component(_prefix "${_dir}/../.." ABSOLUTE)
 # include("${_prefix}/lib/patex-@VERSION@/patex-targets.cmake")
 
 # Report other information.
-set(metacpp_INCLUDE_DIRS "${_prefix}/include/metacpp")
+set(metacpp_INCLUDE_DIRS "${_prefix}/include/")
