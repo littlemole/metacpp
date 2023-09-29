@@ -104,7 +104,7 @@ message("+++++++++++++++++")
     set(LINKER_FLAGS " ${LINKER_FLAGS} ) #  ${JSONCPP_LDFLAGS}")
 
 #    set(LIBS ${GTEST_LIBRARIES} ${JSONCPP_LIBRARIES} ${PATEX_LIBRARIES} ${EXPAT_LIBRARIES} ${STDLIB} )
-    set(LIBS patex jsoncpp_lib expat gtest ${STDLIB} )
+    set(LIBS patex jsoncpp_static expat gtest ${STDLIB} )
 
 
 ENDIF ()
