@@ -130,7 +130,7 @@ set(CMAKE_CXX_FLAGS  	    "${CMAKE_CXX_FLAGS} ${BUILDFLAGS}")
 # include directories
 ############################################
 
-get_target_property(JSONCPP_INCLUDE_DIR jsoncpp_lib INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(JSONCPP_INCLUDE_DIR jsoncpp_static INTERFACE_INCLUDE_DIRECTORIES)
 
 include_directories(include)
 include_directories(${jsoncpp_INCLUDE_DIR})
