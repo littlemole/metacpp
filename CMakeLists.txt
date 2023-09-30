@@ -68,8 +68,11 @@ message("+++++++++++++++++")
 message("${CMAKE_BUILD_TYPE}")
 message("+++++++++++++++++")
 
-	find_package(expat CONFIG REQUIRED)
-	find_package(patex CONFIG REQUIRED)
+	find_package(jsoncpp REQUIRED)
+	find_package(patex REQUIRED)
+	find_package(expat REQUIRED)
+#	find_library(EXPAT_LIBRARY NAMES libexpat.lib)
+#	find_library(EXPATD_LIBRARY NAMES libexpatd.lib)
 
 	set(OSLIBS "Ws2_32" "Rpcrt4" "Shlwapi")
 	set(BUILDFLAGS "${FLAGS}")
