@@ -7,7 +7,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential g++ \
 libgtest-dev git pkg-config valgrind sudo joe wget \
-clang libc++-dev libc++abi-dev libexpat-dev cmake uuid-dev
+clang libc++-dev libc++abi-dev libexpat-dev cmake uuid-dev nlohmann-json3-dev
 
 ARG CXX
 ENV CXX=${CXX}
