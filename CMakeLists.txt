@@ -32,9 +32,6 @@ endif()
 ############################################
 
 option(WITH_TEST "run tests (default:on)" ON)
-if(WITH_TEST)
-    find_package(GTest REQUIRED)
-endif()
 
 
 ############################################
@@ -60,19 +57,14 @@ endif()
 if(WITH_TEST)
 IF (WIN32)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
-endif()
+    if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+    endif()
 
-message("+++++++++++++++++")
-message("${CMAKE_BUILD_TYPE}")
-message("+++++++++++++++++")
-
+    find_package(GTest REQUIRED)
 	find_package(jsoncpp REQUIRED)
 	find_package(patex REQUIRED)
 	find_package(expat REQUIRED)
-#	find_library(EXPAT_LIBRARY NAMES libexpat.lib)
-#	find_library(EXPATD_LIBRARY NAMES libexpatd.lib)
 
 	set(OSLIBS "Ws2_32" "Rpcrt4" "Shlwapi")
 	set(BUILDFLAGS "${FLAGS}")
@@ -81,43 +73,22 @@ message("+++++++++++++++++")
 
 	set(LIBS patex ${GTEST_LIBRARIES}  ${EXPAT_LIBRARIES} ${JSONCPP_LIBRARY}  ${STDLIB}  )
 
-#	if(${CMAKE_BUILD_TYPE} MATCHES "(Release)|(RelWithDebInfo)")
-#
-#		find_library(PATEX_LIBRARY NAMES patex.lib   NO_CACHE)
-#		set(LIBS ${PATEX_LIBRARY} ${LIBS} )
-#       else()
-#		find_library(PATEX_LIBRARY NAMES patexd.lib PATH_SUFFIXES "debug/lib")
-#		set(LIBS ${PATEX_LIBRARY} ${LIBS})
-#	endif()
-
  ELSEIF (UNIX)
 
     set(OSLIBS "pthread")
 	set(BUILDFLAGS "${FLAGS}")
 
-#    find_package(PkgConfig)
-#    pkg_check_modules(JSONCPP REQUIRED jsoncpp)
-#    pkg_check_modules(EXPAT REQUIRED expat)
-#    pkg_check_modules(PATEX REQUIRED patex)
-
-    find_package(jsoncpp REQUIRED)
+#    find_package(jsoncpp REQUIRED)
     find_package(expat REQUIRED)
     find_package(patex REQUIRED)
 
     set(LINKER_FLAGS " ${LINKER_FLAGS} ) #  ${JSONCPP_LDFLAGS}")
 
-#    set(LIBS ${GTEST_LIBRARIES} ${JSONCPP_LIBRARIES} ${PATEX_LIBRARIES} ${EXPAT_LIBRARIES} ${STDLIB} )
     set(LIBS patex jsoncpp_static expat gtest ${STDLIB} )
-
 
 ENDIF ()
 endif()
 
-message("+++++++++++++++++")
-message("BUILDFLAGS: ${BUILDFLAGS}")
-message("LIBS: ${LIBS}")
-message("LDFLAGS: ${LINKER_FLAGS}")
-message("+++++++++++++++++")
 
 
 ############################################
@@ -130,6 +101,62 @@ set(CMAKE_CXX_FLAGS  	    "${CMAKE_CXX_FLAGS} ${BUILDFLAGS}")
 
 
 ############################################
+# gtest & jsoncpp
+############################################
+if(UNIX)
+
+    include(FetchContent)
+
+    # gtest
+    FetchContent_Declare(
+        googletest
+        # Specify the commit you depend on and update it regularly.
+        URL https://github.com/google/googletest/archive/f8d7d77c06936315286eb55f8de22cd23c188571.zip
+    )
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    #FetchContent_MakeAvailable(googletest)
+
+    FetchContent_GetProperties(googletest)
+    if(NOT googletest_POPULATED)
+        FetchContent_Populate(googletest)
+        add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
+    endif()
+
+    # jsoncpp
+
+    set(JSONCPP_LIB_BUILD_STATIC ON)
+    set(BUILD_STATIC_LIBS On)
+    set(BUILD_SHARED_LIBS Off)
+    set(JSONCPP_WITH_TESTS Off) 
+
+    FetchContent_Declare(
+        jsoncpp
+        # Specify the commit you depend on and update it regularly.
+        URL https://github.com/open-source-parsers/jsoncpp/archive/69098a18b9af0c47549d9a271c054d13ca92b006.zip
+    )
+
+    FetchContent_GetProperties(jsoncpp)
+    if(NOT jsoncpp_POPULATED)
+        FetchContent_Populate(jsoncpp)
+        add_subdirectory(${jsoncpp_SOURCE_DIR} ${jsoncpp_BINARY_DIR} EXCLUDE_FROM_ALL)
+    endif()
+    
+    
+	set( LIBS "gtest" "jsoncpp_static" "${LIBS}")
+
+
+endif()
+
+
+
+message("+++++++++++++++++")
+message("BUILDFLAGS: ${BUILDFLAGS}")
+message("LIBS: ${LIBS}")
+message("LDFLAGS: ${LINKER_FLAGS}")
+message("+++++++++++++++++")
+
+############################################
 # include directories
 ############################################
 
@@ -137,13 +164,10 @@ include_directories(include)
 
 if(UNIX)
 	get_target_property(JSONCPP_INCLUDE_DIR jsoncpp_static INTERFACE_INCLUDE_DIRECTORIES)
+    message("JSONCPP: ${jsoncpp_INCLUDE_DIR})")
 	include_directories(${jsoncpp_INCLUDE_DIR})
 endif()
 
-#if(WITH_TEST)
-#include_directories(${EXPAT_INCLUDE_DIR})
-#include_directories(${GTEST_INCLUDE_DIR})
-#endif()
 
 ############################################
 # sources
@@ -180,10 +204,6 @@ target_link_libraries(JsonTests  ${LIBS} ${BACKEND} ${OSLIBS} )
 target_link_libraries(NJsonTests  ${LIBS} ${BACKEND} ${OSLIBS} )
 target_link_libraries(XmlTests  ${LIBS} ${BACKEND} ${OSLIBS} )
 
-#target_link_options(Tests PRIVATE ${JSONCPP_LDFLAGS})
-#target_link_options(SetterGetterTests PRIVATE ${JSONCPP_LDFLAGS})
-#target_link_options(JsonTests PRIVATE ${JSONCPP_LDFLAGS})
-#target_link_options(XmlTests PRIVATE ${JSONCPP_LDFLAGS})
 
 ############################################
 # run tests
