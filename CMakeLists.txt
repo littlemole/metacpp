@@ -8,6 +8,7 @@ project(metacpp)
 include(CTest)
 set(VERSION 0.0.5)
 
+option(WITH_TEST "run tests (default:on)" ON)
 
 ############################################
 # c++ std
@@ -25,13 +26,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if(NOT CMAKE_DEBUG_POSTFIX)
   set(CMAKE_DEBUG_POSTFIX d)
 endif()
-
-
-############################################
-# basic dependecies
-############################################
-
-option(WITH_TEST "run tests (default:on)" ON)
 
 
 ############################################
@@ -78,7 +72,6 @@ IF (WIN32)
     set(OSLIBS "pthread")
 	set(BUILDFLAGS "${FLAGS}")
 
-#    find_package(jsoncpp REQUIRED)
     find_package(expat REQUIRED)
     find_package(patex REQUIRED)
 
@@ -103,7 +96,7 @@ set(CMAKE_CXX_FLAGS  	    "${CMAKE_CXX_FLAGS} ${BUILDFLAGS}")
 ############################################
 # gtest & jsoncpp
 ############################################
-if(UNIX)
+if(UNIX AND WITH_TEST) 
 
     include(FetchContent)
 
@@ -142,10 +135,6 @@ if(UNIX)
         add_subdirectory(${jsoncpp_SOURCE_DIR} ${jsoncpp_BINARY_DIR} EXCLUDE_FROM_ALL)
     endif()
     
-    
-	set( LIBS "gtest" "jsoncpp_static" "${LIBS}")
-
-
 endif()
 
 
@@ -162,7 +151,7 @@ message("+++++++++++++++++")
 
 include_directories(include)
 
-if(UNIX)
+if(UNIX AND WITH_TEST)
 	get_target_property(JSONCPP_INCLUDE_DIR jsoncpp_static INTERFACE_INCLUDE_DIRECTORIES)
     message("JSONCPP: ${jsoncpp_INCLUDE_DIR})")
 	include_directories(${jsoncpp_INCLUDE_DIR})
@@ -176,17 +165,13 @@ endif()
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "include/${CMAKE_PROJECT_NAME}/*.h")
 
-############################################
-# lib target
-############################################
 
-#add_library(${CMAKE_PROJECT_NAME}  STATIC ${SOURCES})
-
-if(WITH_TEST)
 
 ############################################
 # tests
 ############################################
+
+if(WITH_TEST)
 
 add_executable(Tests t/test.cpp)
 add_executable(SetterGetterTests t/getter_setter.cpp)
@@ -209,12 +194,13 @@ target_link_libraries(XmlTests  ${LIBS} ${BACKEND} ${OSLIBS} )
 # run tests
 ############################################
 
-	add_test(NAME Tests COMMAND Tests)
-	add_test(NAME SetterGetterTests COMMAND SetterGetterTests)
-	add_test(NAME JsonTests COMMAND JsonTests)
-	add_test(NAME NJsonTests COMMAND NJsonTests)
-	add_test(NAME XmlTests COMMAND XmlTests)	
-else()
+add_test(NAME Tests COMMAND Tests)
+add_test(NAME SetterGetterTests COMMAND SetterGetterTests)
+add_test(NAME JsonTests COMMAND JsonTests)
+add_test(NAME NJsonTests COMMAND NJsonTests)
+add_test(NAME XmlTests COMMAND XmlTests)	
+
+
 endif()
 
  

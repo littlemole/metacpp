@@ -13,11 +13,11 @@ function cmake_build {
     mkdir -p $MODE
     cd $MODE
 
-    cmake .. -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_STANDARD=20
+    cmake .. -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_CXX_STANDARD=20 -DWITH_TEST=$WITH_TEST
      
     make
     
-    if [ "$SKIPTESTS" == "true" ]
+    if [ "WITH_TEST" == "Off" ]
     then
     	echo "skipping tests for $1 ..."
     else
@@ -33,7 +33,7 @@ cd /usr/local/src/$1
 
 if [ "$BUILDCHAIN" == "make" ] 
 then
-    if [ "$SKIPTESTS" != "true" ]
+    if [ "$WITH_TEST" != "Off" ]
     then    
         make clean
         make -e test

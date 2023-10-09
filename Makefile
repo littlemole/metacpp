@@ -11,6 +11,7 @@ BUILDCHAIN = make
 CONTAINER = $(shell echo "$(LIBNAME)_$(CXX)_$(BUILDCHAIN)" | sed 's/++/pp/')
 IMAGE = littlemole/$(CONTAINER)
 
+WITH_TEST = On
 
 all: test
 
@@ -44,22 +45,23 @@ remove:
 	-rm $(DESTDIR)/$(PREFIX)/lib/pkgconfig/$(LIBNAME).pc
 	
 image: 
-	docker build -t $(IMAGE) . -fDockerfile  --build-arg CXX=$(CXX) --build-arg BUILDCHAIN=$(BUILDCHAIN)
+	docker build -t $(IMAGE) . -fDockerfile  --build-arg CXX=$(CXX) --build-arg BUILDCHAIN=$(BUILDCHAIN) --build-arg WITH_TEST=$(WITH_TEST)
 
 
 # docker stable testing environment
 
 clean-image: 
-	docker build -t $(IMAGE) . --no-cache -fDockerfile --build-arg CXX=$(CXX)
+	docker build -t $(IMAGE) . --no-cache -fDockerfile --build-arg CXX=$(CXX) --build-arg WITH_TEST=$(WITH_TEST)
 		
 run: image-remove image 
 	docker run --name $(LIBNAME) -d -e CXX=$(CXX) -v "$(PWD):/opt/workspace/$(LIBNAME)"  $(IMAGE)
                                         
 bash: image-remove image
-	docker run --name $(LIBNAME) -ti -e CXX=$(CXX) -e BUILDCHAIN=$(BUILDCHAIN) -v "$(PWD):/opt/workspace/$(LIBNAME)"  $(IMAGE) bash
+	docker run --name $(LIBNAME) -ti -e CXX=$(CXX) -e BUILDCHAIN=$(BUILDCHAIN) -e WITH_TEST=$(WITH_TEST) -v "$(PWD):/opt/workspace/$(LIBNAME)"  $(IMAGE) bash
 
 stop: 
 	-docker stop $(LIBNAME)
 	
 image-remove: stop 
 	-docker rm $(LIBNAME)
+

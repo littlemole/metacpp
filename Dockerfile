@@ -15,6 +15,9 @@ ENV CXX=${CXX}
 ARG BUILDCHAIN=make
 ENV BUILDCHAIN=${BUILDCHAIN}
 
+ARG WITH_TEST=On
+ENV WITH_TEST=${WITH_TEST}
+
 RUN echo "*********************"
 RUN echo -e $CXX $BUILDCHAIN
 RUN echo "*********************"
