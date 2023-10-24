@@ -98,7 +98,7 @@ public:
 
 	int test2(int x, std::string txt)
 	{
-		return x + txt.size();
+		return x + (int) txt.size();
 	}
 
 	std::string test3(int x)

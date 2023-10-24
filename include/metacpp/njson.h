@@ -328,8 +328,8 @@ void fromJson(const char* name, const nlohmann::json& from, std::vector<T>& v)
 
 	auto f = name ? from[name] : from;
 
-	unsigned int size = f.size();
-	for (unsigned int i = 0; i < size; i++)
+	size_t size = f.size();
+	for (size_t i = 0; i < size; i++)
 	{
 		T t;
 		fromJson(0,f[i], t);

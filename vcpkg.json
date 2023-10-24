@@ -5,6 +5,7 @@
         "gtest",
         "expat",
         "patex",
-        "jsoncpp"
+        "jsoncpp",
+        "nlohmann-json"
     ]
 }
