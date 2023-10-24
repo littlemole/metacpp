@@ -387,7 +387,7 @@ void fromJson(const char* name, const Json::Value& from, T& t)
 
 	auto visitor = [&f](auto name, auto m)
 	{
-		std::remove_reference_t<typename decltype(m)::setter_value_t> value;
+		std::remove_reference_t<typename decltype(m)::setter_value_t> value{};
 		fromJson(name.name, f, value);
 		m = value;
 	};

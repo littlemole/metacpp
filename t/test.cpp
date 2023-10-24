@@ -196,7 +196,7 @@ TEST_F(BasicTest, xmlNs)
 	std::string p;
 	std::string ns;
 	bool is_attr = false;
-	meta::visit(t, [&p,&ns,&is_attr](auto n, auto m) 
+	meta::visit(t, [&p,&ns,&is_attr](auto n, auto /*m*/ ) 
 	{
 		if (n == "x") 
 		{
@@ -246,6 +246,7 @@ TEST_F(BasicTest, simpleConstExpr)
 	//	constexpr int x = tester(); // that would fail to compile
 
 	constexpr auto m = meta::of<TestObj>();
+	(void)m;
 }
 
 /*

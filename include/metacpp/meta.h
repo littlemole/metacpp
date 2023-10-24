@@ -295,7 +295,7 @@ namespace impl {
 
 	inline constexpr auto entity_root(const char* name)
 	{
-		return impl::EntityRoot{ name };
+		return impl::EntityRoot{ name, {} };
 	}
 
 	inline constexpr auto entity_root(const char* name, const xmlns& ns)
@@ -543,7 +543,7 @@ namespace impl {
 		}
 
 		template<class P>
-		MetaProxy<T, M>& assign(const P& p, std::false_type)
+		MetaProxy<T, M>& assign(const P& /*p*/, std::false_type)
 		{
 			return *this;
 		}
