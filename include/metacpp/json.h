@@ -200,6 +200,7 @@ inline void fromJson(const char* name, const Json::Value& from, int& t)
 	}
 }
 
+
 inline void fromJson(const char* name, const Json::Value& from, unsigned int& t)
 {
 	if(!name)
@@ -213,6 +214,36 @@ inline void fromJson(const char* name, const Json::Value& from, unsigned int& t)
 		t = from[name].asUInt();
 	}
 }
+
+#ifndef WIN32
+inline void fromJson(const char* name, const Json::Value& from, long& t)
+{
+	if(!name)
+	{
+		t = from.asInt64();
+		return;
+	}
+	if (from.isMember(name))
+	{
+		t = from[name].asInt();
+	}
+}
+
+inline void fromJson(const char* name, const Json::Value& from, unsigned long& t)
+{
+	if(!name)
+	{
+		t = from.asUInt64();
+		return;
+	}
+
+	if (from.isMember(name))
+	{
+		t = from[name].asUInt();
+	}
+}
+
+#endif
 
 inline void fromJson(const char* name, const Json::Value& from, double& t)
 {

@@ -208,6 +208,37 @@ inline void fromJson(const char* name, const nlohmann::json& from, unsigned int&
 	}
 }
 
+#ifndef WIN32
+
+inline void fromJson(const char* name, const nlohmann::json& from, long& t)
+{
+	if(!name)
+	{
+		from.get_to(t);
+		return;
+	}
+	if (from.contains(name))
+	{
+		from[name].get_to(t);
+	}
+}
+
+inline void fromJson(const char* name, const nlohmann::json& from, unsigned long& t)
+{
+	if(!name)
+	{
+		from.get_to(t);
+		return;
+	}
+
+	if (from.contains(name))
+	{
+		from[name].get_to(t);
+	}
+}
+
+#endif
+
 inline void fromJson(const char* name, const nlohmann::json& from, double& t)
 {
 	if(!name)
