@@ -236,3 +236,9 @@ install(FILES ${metacpp_BINARY_DIR}/metacpp-config.cmake
          ${metacpp_BINARY_DIR}/metacpp-config-version.cmake
          DESTINATION lib/metacpp-${VERSION})
 
+############################################
+# packaging
+############################################
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+include(package)

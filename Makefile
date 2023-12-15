@@ -6,6 +6,7 @@ LIBNAME = metacpp
 LIBINC = ./include
 
 PWD = $(shell pwd)
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 BUILDCHAIN = make
 CONTAINER = $(shell echo "$(LIBNAME)_$(CXX)_$(BUILDCHAIN)" | sed 's/++/pp/')
@@ -64,4 +65,17 @@ stop:
 	
 image-remove: stop 
 	-docker rm $(LIBNAME)
+
+package:
+	rm -rf out
+
+	cmake --preset "gcc-debug"
+	cmake --build --preset "gcc-debug"
+	DESTDIR=$(SCRIPT_DIR)_install cmake --build  --target install --preset="gcc-debug"
+
+	cmake --preset "gcc-release"
+	cmake --build --preset "gcc-release"
+	DESTDIR=$(SCRIPT_DIR)_install cmake --build  --target install --preset="gcc-release"
+
+	cpack --config release.cmake -G DEB
 
