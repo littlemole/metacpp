@@ -44,8 +44,8 @@ endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(STDLIB "c++abi")
-    set(LINKERFLAGS "-stdlib=libc++ -fcoroutines-ts ")
-    set(FLAGS "-std=c++20 -stdlib=libc++ -fcoroutines-ts ")
+    set(LINKERFLAGS "-stdlib=libc++")
+    set(FLAGS "-std=c++20 -stdlib=libc++")
 endif()
 
 
