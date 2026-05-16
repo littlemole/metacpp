@@ -71,27 +71,27 @@ namespace impl {
 	using has_entity_root = std::experimental::is_detected<has_entity_root_t, T>;
 
 
-	template<class T>
-	struct CheckXmlNs
+	template<class T, class R = void>  
+	struct enable_if_ns { typedef R type; };
+
+	template<class T, class Enable = void>
+	struct HasNs
 	{
-		static constexpr bool has_xml_ns() 
-		{ return false; }
+		constexpr static bool value = false;
 	};
 
 	template<class T>
-		requires (&T::xml_namespace != 0)
-	struct CheckXmlNs<T*> 
+	struct HasNs<T,typename enable_if_ns<decltype(T::xml_namespace)>::type>
 	{
-		static constexpr bool has_xml_ns()
-		{ return true; }
+		constexpr static bool value = true;
 	};
-
+	
 } // end namespace impl
 
 template<class T>
 constexpr bool has_ns()
 {
-    return impl::CheckXmlNs<T*>::has_xml_ns();
+    return impl::HasNs<T>::value;
 };
 
 

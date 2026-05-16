@@ -11,7 +11,7 @@
  
 using namespace meta;
 
-class JsonTest : public ::testing::Test {
+class JsonRefTest : public ::testing::Test {
 protected:
 
 	static void SetUpTestCase() {
@@ -50,17 +50,16 @@ public:
 
 
 template<>
-struct meta::Data<TestObj>
+class meta::Data<std::vector<TestObj>>
 {
-	static constexpr auto meta()
-	{
-		return meta::data(
-			//entity_root("TEST"),
-			member("x", &TestObj::x),
-			"txt", &TestObj::txt
-			//getter_setter("txt", &Test::get, &Test::set)
-		);
-	}
+public:
+
+        constexpr static auto meta()
+        {
+                return meta::data(
+                        meta::entity_root("vector")
+                );
+        }
 };
 
 
@@ -70,31 +69,11 @@ public:
 
 	std::vector<TestObj> test;
 
-	constexpr static auto meta() 
-	{
-		return meta::data(
-			meta::entity_root("huhu"),
-			meta::member("test", &ArrayTest::test)
-		);
-	}
 };
 
 
-template<>
-class meta::Data<std::vector<TestObj>>
-{
-public:
 
-	constexpr static auto meta()
-	{
-		return meta::data(
-			meta::entity_root("vector")
-		);
-	}
-};
-
-
-TEST_F(JsonTest, simpleJson)
+TEST_F(JsonRefTest, simpleJson)
 {
 	TestObj t{ 42, "hello meta" };
 
@@ -112,7 +91,7 @@ TEST_F(JsonTest, simpleJson)
 }
 
 
-TEST_F(JsonTest, simpleJsonVector)
+TEST_F(JsonRefTest, simpleJsonVector)
 {
 	TestObj t{ 42, "hello meta" };
     ArrayTest at;
@@ -123,7 +102,7 @@ TEST_F(JsonTest, simpleJsonVector)
 
 	std::string s = JSON::stringify(json);
 
-	EXPECT_STREQ("{\n\t\"huhu\" : \n\t{\n\t\t\"test\" : \n\t\t[\n\t\t\t{\n\t\t\t\t\"txt\" : \"hello meta\",\n\t\t\t\t\"x\" : 42\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"txt\" : \"hello meta\",\n\t\t\t\t\"x\" : 42\n\t\t\t}\n\t\t]\n\t}\n}",s.c_str());
+	EXPECT_STREQ(s.c_str(),"{\n\t\"test\" : \n\t[\n\t\t{\n\t\t\t\"txt\" : \"hello meta\",\n\t\t\t\"x\" : 42\n\t\t},\n\t\t{\n\t\t\t\"txt\" : \"hello meta\",\n\t\t\t\"x\" : 42\n\t\t}\n\t]\n}");
 
 	ArrayTest at2;
 	fromJson(json, at2);
@@ -131,11 +110,11 @@ TEST_F(JsonTest, simpleJsonVector)
     json = toJson(at2);
 	s = JSON::stringify(json);
 
-	EXPECT_STREQ("{\n\t\"huhu\" : \n\t{\n\t\t\"test\" : \n\t\t[\n\t\t\t{\n\t\t\t\t\"txt\" : \"hello meta\",\n\t\t\t\t\"x\" : 42\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"txt\" : \"hello meta\",\n\t\t\t\t\"x\" : 42\n\t\t\t}\n\t\t]\n\t}\n}",s.c_str());
+	EXPECT_STREQ(s.c_str(),"{\n\t\"test\" : \n\t[\n\t\t{\n\t\t\t\"txt\" : \"hello meta\",\n\t\t\t\"x\" : 42\n\t\t},\n\t\t{\n\t\t\t\"txt\" : \"hello meta\",\n\t\t\t\"x\" : 42\n\t\t}\n\t]\n}");
 
 }
  
-TEST_F(JsonTest, jsonVector)
+TEST_F(JsonRefTest, jsonVector)
 {
 	TestObj t{ 42, "hello meta" };
 
@@ -171,24 +150,8 @@ public:
 	std::vector<std::string> tags;
 };
 
-template<>
-struct meta::Data<User>
-{
-        static constexpr auto meta()
-        {
-                return meta::data(
-					entity_root("user"),
-					"username", &User::username,
-					"login", &User::login,
-					"pwd", &User::pwd,
-					"tags", &User::tags
-				);
-		}
-};
 
-
-
-TEST_F(JsonTest, toJson) 
+TEST_F(JsonRefTest, toJson) 
 {
 	User user{ "mike", "littlemole", "secret", { "one", "two", "three"} };
 	Json::Value json = toJson(user);
@@ -197,7 +160,7 @@ TEST_F(JsonTest, toJson)
 
 	std::cout << s << std::endl;
 
-	EXPECT_EQ("{\"user\":{\"login\":\"littlemole\",\"pwd\":\"secret\",\"tags\":[\"one\",\"two\",\"three\"],\"username\":\"mike\"}}",s);
+	EXPECT_EQ("{\"login\":\"littlemole\",\"pwd\":\"secret\",\"tags\":[\"one\",\"two\",\"three\"],\"username\":\"mike\"}",s);
 
 	User other;
 	fromJson(json,other);
@@ -213,7 +176,7 @@ TEST_F(JsonTest, toJson)
 
 
 
-TEST_F(JsonTest, toJsonConst) 
+TEST_F(JsonRefTest, toJsonConst) 
 {
 	const User user{ "mike", "littlemole", "secret", { "one", "two", "three"} };
 	Json::Value json = toJson(user);
@@ -222,7 +185,7 @@ TEST_F(JsonTest, toJsonConst)
 
 	std::cout << s << std::endl;
 
-	EXPECT_EQ("{\"user\":{\"login\":\"littlemole\",\"pwd\":\"secret\",\"tags\":[\"one\",\"two\",\"three\"],\"username\":\"mike\"}}",s);
+	EXPECT_EQ("{\"login\":\"littlemole\",\"pwd\":\"secret\",\"tags\":[\"one\",\"two\",\"three\"],\"username\":\"mike\"}",s);
 
 	User other;
 	fromJson(json,other);

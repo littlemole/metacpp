@@ -11,7 +11,7 @@
 
 using namespace meta;
 
-class XmlTest : public ::testing::Test {
+class XmlRefTest : public ::testing::Test {
 protected:
 
 
@@ -74,22 +74,22 @@ constexpr meta::xmlns meta::get_namespace<TestX::TestObj>()
 	return ns;	
 }
 */
-
+/*
 template<>
-struct meta::Data<TestX::TestObj>
+struct meta::Data<TestObj>
 {
 	static constexpr auto meta()
 	{
 		return meta::data(
 			entity_root("TEST"),
-			member("x", &TestX::TestObj::x),
+			member("x", &TestObj::x),
 //            meta::member("txt", &TestObj::txt, meta::attribute())
-			"txt", &TestX::TestObj::txt
+			"txt", &TestObj::txt
 			//getter_setter("txt", &Test::get, &Test::set)
 		);
 	}
 };
-
+*/
 
 class TestObj2
 {
@@ -106,7 +106,7 @@ public:
 	{
 		txt = s;
 	}
-
+/*
     static constexpr auto meta()
     {
         return meta::data(
@@ -116,6 +116,7 @@ public:
 			meta::getter_setter("txt",&TestObj2::get, &TestObj2::set, meta::attribute())
         );
     }
+*/    
 }; 
     
          
@@ -125,14 +126,16 @@ public:
 	int x;
 	std::string txt;
 
+/*
     static constexpr auto meta()
     {
         return meta::data(
-            meta::entity_root("TEST", meta::xmlns(/*"myns",*/"urn:myawesome.ns")),
+            meta::entity_root("TEST", meta::xmlns(/ *"myns",* /"urn:myawesome.ns")),
             meta::member("x", &TestObj3::x, meta::xmlns("o","urn:other.ns")),
             meta::member("txt", &TestObj3::txt, meta::xmlns("p","urn:myawesome.ns"))
         );
     }
+    */
 };    
 
          
@@ -141,7 +144,7 @@ class TestObj4
 public:
 	int x;
 	std::string txt;
-
+/*
     static constexpr auto meta()
     {
         return meta::data(
@@ -150,6 +153,7 @@ public:
             meta::member("txt", &TestObj4::txt, meta::xmlns("p","urn:myawesome.ns"))
         );
     }
+    */
 };  
 
 class TestObj5
@@ -158,14 +162,16 @@ public:
 	int x;
 	std::string txt;
 
+/*
     static constexpr auto meta()
     {
         return meta::data(
-            meta::entity_root("TEST", meta::xmlns(/*"myns",*/"urn:myawesome.ns")),
+            meta::entity_root("TEST", meta::xmlns(/ *"myns",* /"urn:myawesome.ns")),
             meta::member("x", &TestObj5::x, meta::xmlns("o","urn:other.ns")),
             meta::member("txt", &TestObj5::txt, meta::xmlns("p","urn:myprivate.ns"))
         );
     }
+    */
 };   
 
 
@@ -174,7 +180,7 @@ class ArrayTest
 public:
 
 	std::vector<TestX::TestObj> test;
-
+/*
 	constexpr static auto meta() 
 	{
 		return meta::data(
@@ -182,9 +188,10 @@ public:
 			meta::member("test", &ArrayTest::test)
 		);
 	}
+	*/
 };
 
-
+/*
 template<>
 class meta::Data<std::vector<TestX::TestObj>>
 {
@@ -197,9 +204,23 @@ public:
 		);
 	}
 };
+*/
+
+template<>
+class meta::Data<std::vector<TestX::TestObj>>
+{
+public:
+
+        constexpr static auto meta()
+        {
+                return meta::data(
+                        meta::entity_root("vector")
+                );
+        }
+};
 
   
-TEST_F(XmlTest, simpleXml)
+TEST_F(XmlRefTest, simpleXml)
 {
 	TestX::TestObj t{ 42, "hello\"<&> meta" };
 
@@ -208,7 +229,7 @@ TEST_F(XmlTest, simpleXml)
 	std::string s = xml->toString();
     std::cout << s << std::endl;
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TEST><x>42</x><txt>hello\"&lt;&amp;&gt; meta</txt></TEST>",s.c_str());
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TestObj><x>42</x><txt>hello\"&lt;&amp;&gt; meta</txt></TestObj>",s.c_str());
     
 	TestX::TestObj t2;
 	fromXml(s, t2);
@@ -220,7 +241,7 @@ TEST_F(XmlTest, simpleXml)
      
             
             
-TEST_F(XmlTest, simpleXml2)
+TEST_F(XmlRefTest, simpleXml2)
 {
 	 TestObj2 t{ 42, "hello <&> meta" };
 
@@ -229,7 +250,7 @@ TEST_F(XmlTest, simpleXml2)
 	std::string s = xml->toString();
     std::cout << s << std::endl;
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TEST x=\"42\" txt=\"hello &lt;&amp;> meta\" />",s.c_str());
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TestObj2><x>42</x><txt>hello &lt;&amp;&gt; meta</txt></TestObj2>",s.c_str());
     
 	TestObj2 t2;
 	fromXml(xml, t2);
@@ -239,7 +260,7 @@ TEST_F(XmlTest, simpleXml2)
       
 }       
 
-TEST_F(XmlTest, simpleXml3)
+TEST_F(XmlRefTest, simpleXml3)
 {
 	TestObj3 t{ 42, "hello meta" };
 
@@ -248,7 +269,7 @@ TEST_F(XmlTest, simpleXml3)
 	std::string s = xml->toString();
     std::cout << s << std::endl;
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TEST xmlns=\"urn:myawesome.ns\"><o:x xmlns:o=\"urn:other.ns\">42</o:x><txt>hello meta</txt></TEST>",s.c_str());
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TestObj3><x>42</x><txt>hello meta</txt></TestObj3>",s.c_str());
     
 	TestObj3 t2;
 	fromXml(xml, t2);
@@ -259,7 +280,7 @@ TEST_F(XmlTest, simpleXml3)
 } 
    
    
-TEST_F(XmlTest, simpleXml4)
+TEST_F(XmlRefTest, simpleXml4)
 {
 	TestObj4 t{ 42, "hello meta" };
 
@@ -268,7 +289,7 @@ TEST_F(XmlTest, simpleXml4)
 	std::string s = xml->toString();
     std::cout << s << std::endl;
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<myns:TEST xmlns:myns=\"urn:myawesome.ns\" xmlns:o=\"urn:other.ns\" o:x=\"42\"><p:txt xmlns:p=\"urn:myawesome.ns\">hello meta</p:txt></myns:TEST>",s.c_str());
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TestObj4><x>42</x><txt>hello meta</txt></TestObj4>",s.c_str());
     
 	TestObj4 t2;
 	fromXml(xml, t2);
@@ -279,7 +300,7 @@ TEST_F(XmlTest, simpleXml4)
 }
 
 
-TEST_F(XmlTest, simpleXml5)
+TEST_F(XmlRefTest, simpleXml5)
 {
 	TestObj5 t{ 42, "hello meta" };
 
@@ -288,7 +309,7 @@ TEST_F(XmlTest, simpleXml5)
 	std::string s = xml->toString();
     std::cout << s << std::endl;
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TEST xmlns=\"urn:myawesome.ns\"><o:x xmlns:o=\"urn:other.ns\">42</o:x><p:txt xmlns:p=\"urn:myprivate.ns\">hello meta</p:txt></TEST>",s.c_str());
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TestObj5><x>42</x><txt>hello meta</txt></TestObj5>",s.c_str());
     
 	TestObj5 t2;
 	fromXml(xml, t2);
@@ -298,7 +319,7 @@ TEST_F(XmlTest, simpleXml5)
       
 }
 
-TEST_F(XmlTest, simpleXmlVector)
+TEST_F(XmlRefTest, simpleXmlVector)
 {
 	TestX::TestObj t{ 42, "hello meta" };
     ArrayTest at;
@@ -310,7 +331,7 @@ TEST_F(XmlTest, simpleXmlVector)
 	std::string s = xml->toString();
     std::cout << s << std::endl;
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<huhu><test><x>42</x><txt>hello meta</txt></test><test><x>42</x><txt>hello meta</txt></test></huhu>",s.c_str());
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<ArrayTest><test><x>42</x><txt>hello meta</txt></test><test><x>42</x><txt>hello meta</txt></test></ArrayTest>",s.c_str());
 
 	ArrayTest at2;
 	fromXml(xml, at2);
@@ -318,12 +339,11 @@ TEST_F(XmlTest, simpleXmlVector)
     xml = toXml(at2);
 	s = xml->toString();
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<huhu><test><x>42</x><txt>hello meta</txt></test><test><x>42</x><txt>hello meta</txt></test></huhu>",s.c_str());
-
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<ArrayTest><test><x>42</x><txt>hello meta</txt></test><test><x>42</x><txt>hello meta</txt></test></ArrayTest>",s.c_str());
 }
 
 
-TEST_F(XmlTest, xmlVector)
+TEST_F(XmlRefTest, xmlVector)
 {
 	TestX::TestObj t{ 42, "hello meta" };
 
@@ -334,15 +354,16 @@ TEST_F(XmlTest, xmlVector)
 	auto xml = toXml(v);
 	std::string s = xml->toString();
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<vector><TEST><x>42</x><txt>hello meta</txt></TEST><TEST><x>42</x><txt>hello meta</txt></TEST></vector>",s.c_str());
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<vector><TestObj><x>42</x><txt>hello meta</txt></TestObj><TestObj><x>42</x><txt>hello meta</txt></TestObj></vector>",s.c_str());
 
+std::cout << s << std::endl;
     std::vector<TestX::TestObj> v2;
 	fromXml(xml, v2);
 
 	xml = toXml(v2);
 	s = xml->toString();
 
-	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<vector><TEST><x>42</x><txt>hello meta</txt></TEST><TEST><x>42</x><txt>hello meta</txt></TEST></vector>",s.c_str());
+	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<vector><TestObj><x>42</x><txt>hello meta</txt></TestObj><TestObj><x>42</x><txt>hello meta</txt></TestObj></vector>",s.c_str());
 
 } 
  
@@ -379,13 +400,14 @@ public:
 	std::vector<std::string> tags;
 };
 
+
 template<>
 struct meta::Data<User>
 {
         static constexpr auto meta()
         {
                 return meta::data(
-					entity_root("user"),
+					entity_root("User"),
 					"username", &User::username,
 					"login", &User::login,
 					"pwd", &User::pwd,
@@ -396,7 +418,7 @@ struct meta::Data<User>
 
 
 
-TEST_F(XmlTest, toXml) 
+TEST_F(XmlRefTest, toXml) 
 {
 	User user{ "mike", "littlemole", "secret", { "one", "two", "three"} };
 
@@ -405,7 +427,7 @@ TEST_F(XmlTest, toXml)
 
 	std::cout << s << std::endl;
 
-	EXPECT_EQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<user><username>mike</username><login>littlemole</login><pwd>secret</pwd><tags>one</tags><tags>two</tags><tags>three</tags></user>",s);
+	EXPECT_EQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<User><username>mike</username><login>littlemole</login><pwd>secret</pwd><tags>one</tags><tags>two</tags><tags>three</tags></User>",s);
 
 	User other;
 	fromXml(xml,other);

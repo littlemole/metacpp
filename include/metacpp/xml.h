@@ -258,9 +258,19 @@ void toXml( const meta::EntityName& n, const T& from, patex::xml::ElementPtr to,
 	}
 	else
 	{
-		auto visitor = [&to]( auto n, auto m)
+		constexpr auto type_name {std::meta::display_string_of(std::meta::decay(^^T))};
+		constexpr size_t pos = type_name.find_last_of("::");
+		constexpr const char * n = pos == std::string::npos 
+			? type_name.data()
+			: type_name.data() + pos + 1;
+                
+                meta::EntityName en(n, get_namespace<T>());                
+		patex::xml::ElementPtr el = createElement(en,to);
+		to->appendChild(el);		
+
+		auto visitor = [&el]( auto n, auto m)
 		{	
-			toXml(n, *m, to);
+			toXml(n, *m, el);
 		};
 		meta::visit(from,visitor);		
 	}
@@ -282,9 +292,19 @@ void toXml( const meta::EntityName& n, T& from, patex::xml::ElementPtr to, typen
 	}
 	else
 	{
-		auto visitor = [&to]( auto n, auto m)
+		constexpr auto type_name {std::meta::display_string_of(std::meta::decay(^^T))};
+		constexpr size_t pos = type_name.find_last_of("::");
+		constexpr const char * n = pos == std::string::npos 
+			? type_name.data()
+			: type_name.data() + pos + 1;
+                
+                meta::EntityName en(n, get_namespace<T>());                
+		patex::xml::ElementPtr el = createElement(en,to);
+		to->appendChild(el);		
+
+		auto visitor = [&el]( auto n, auto m)
 		{	
-			toXml(n, *m, to);
+			toXml(n, *m, el);
 		};
 		meta::visit(from,visitor);		
 	}
@@ -447,8 +467,22 @@ template<class T>
 void fromXml( patex::xml::ElementPtr from, T& to, typename std::enable_if<std::is_class<T>::value>::type* = nullptr )
 {
 	const auto& r = meta::entity_root<T>();
-
-	impl::fromXml(r,from,to);
+	
+	if(r.name)
+	{
+		impl::fromXml(r,from,to);
+	}
+	else
+	{
+		constexpr auto type_name {std::meta::display_string_of(std::meta::decay(^^T))};
+		constexpr size_t pos = type_name.find_last_of("::");
+		constexpr const char * n = pos == std::string::npos 
+			? type_name.data()
+			: type_name.data() + pos + 1;
+                
+                meta::EntityName en(n, get_namespace<T>());                
+		impl::fromXml(en,from,to);	
+	}
 	return;
 }
 
@@ -457,7 +491,21 @@ template<class T>
 void fromXml( patex::xml::ElementPtr from, std::vector<T>& to, typename std::enable_if<std::is_class<T>::value>::type* = nullptr )
 {
 	const auto& r = meta::entity_root<std::vector<T>>();
-	const auto& rt = meta::entity_root<T>();
+	auto rt = meta::entity_root<T>();
+	
+	if(!rt.name)
+	{
+		constexpr auto type_name {std::meta::display_string_of(std::meta::decay(^^T))};
+		constexpr size_t pos = type_name.find_last_of("::");
+		constexpr const char * n = pos == std::string::npos 
+                        ? type_name.data()
+                        : type_name.data() + pos + 1;
+                        
+		meta::EntityName en(n,get_namespace<T>());
+		rt = en;
+	}
+
+std::cout << ">>>>>>>>> " << r.name << " " << rt.name << std::endl;
 
 	auto el = from;
 	if(r.name)

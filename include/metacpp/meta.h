@@ -527,22 +527,20 @@ namespace impl {
 		{
 			constexpr auto ctx{std::meta::access_context::unchecked()};
 			static constexpr auto members{std::define_static_array(std::meta::members_of(^^P, ctx))};
-
+/*
 			constexpr auto type_name {std::meta::display_string_of(std::meta::decay(^^P))};
 			constexpr size_t pos = type_name.find_last_of("::");
 			constexpr const char * n = pos == std::string::npos 
 				? type_name.data()
 				: type_name.data() + pos + 1;
-
+*/
 			constexpr auto s = members.size();
 //			constexpr std::tuple<> start;
 			constexpr auto start = std::make_tuple(
-				meta::entity_root( n, get_namespace<P>() )
+//				meta::entity_root( n, get_namespace<P>() )
 			);
 
 			return generate_meta<0,s,P>(start);
-		
-//			return std::tuple<>();
 		}
 
 	public:

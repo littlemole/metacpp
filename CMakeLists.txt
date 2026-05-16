@@ -185,8 +185,10 @@ message(${CMAKE_CXX_FLAGS})
 add_executable(Tests t/test.cpp)
 add_executable(SetterGetterTests t/getter_setter.cpp)
 add_executable(JsonTests t/json.cpp)
+add_executable(JsonRefTests t/json_reflection.cpp)
 add_executable(NJsonTests t/njson.cpp)
 add_executable(XmlTests t/xml.cpp)
+add_executable(XmlRefTests t/xml_reflection.cpp)
 add_executable(SerializeTests t/serialize.cpp)
 
 ############################################
@@ -196,8 +198,10 @@ add_executable(SerializeTests t/serialize.cpp)
 target_link_libraries(Tests ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS}  )
 target_link_libraries(SetterGetterTests ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
 target_link_libraries(JsonTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
+target_link_libraries(JsonRefTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
 target_link_libraries(NJsonTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
 target_link_libraries(XmlTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
+target_link_libraries(XmlRefTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
 target_link_libraries(SerializeTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
 
 
@@ -208,8 +212,10 @@ target_link_libraries(SerializeTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
 add_test(NAME Tests COMMAND Tests)
 add_test(NAME SetterGetterTests COMMAND SetterGetterTests)
 add_test(NAME JsonTests COMMAND JsonTests)
+add_test(NAME JsonRefTests COMMAND JsonRefTests)
 add_test(NAME NJsonTests COMMAND NJsonTests)
 add_test(NAME XmlTests COMMAND XmlTests)	
+add_test(NAME XmlRefTests COMMAND XmlRefTests)	
 add_test(NAME SerializeTests COMMAND SerializeTests)	
 
 
