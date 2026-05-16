@@ -48,7 +48,7 @@ public:
 	}
 };
 
-
+/*
 template<>
 struct meta::Data<TestObj>
 {
@@ -62,7 +62,7 @@ struct meta::Data<TestObj>
 		);
 	}
 };
-
+*/
 
 class ArrayTest
 {

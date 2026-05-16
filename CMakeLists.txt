@@ -14,8 +14,8 @@ option(WITH_TEST "run tests (default:on)" ON)
 # c++ std
 ############################################
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_STANDARD 26)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 
@@ -37,8 +37,8 @@ set(STDLIB "")
 
 if(WIN32)
     set(FLAGS "/W3")
-else()
-    set(FLAGS "-Wall -Wextra")
+else()        #-std=c++26
+    set(FLAGS "-std=c++26  -Wall -Wextra -std=c++26")
 endif()
 
 
@@ -75,14 +75,14 @@ IF (WIN32)
  ELSEIF (UNIX)
 
     set(OSLIBS "pthread")
-	set(BUILDFLAGS "${FLAGS}")
+	set(BUILDFLAGS "${FLAGS} -I/opt/gcc16/expat-2.8.0/lib")
 
-    find_package(expat REQUIRED)
-    find_package(patex REQUIRED)
+#    find_package(expat REQUIRED)
+ #   find_package(patex REQUIRED)
 
-    set(LINKER_FLAGS " ${LINKER_FLAGS} ) #  ${JSONCPP_LDFLAGS}")
-
-    set(LIBS patex jsoncpp_static expat gtest ${STDLIB} )
+    set(LINKER_FLAGS "-L/opt/gcc16/expat-2.8.0/build/ ${LINKER_FLAGS}" ) #  ${JSONCPP_LDFLAGS}")
+    set(EXPAT "/opt/gcc16/expat-2.8.0/build/libexpat.a")
+    set(LIBS patex jsoncpp_static gtest ${STDLIB} )
 
 ENDIF ()
 endif()
@@ -178,21 +178,27 @@ file(GLOB_RECURSE HEADERS "include/${CMAKE_PROJECT_NAME}/*.h")
 
 if(WITH_TEST)
 
+set(CMAKE_CXX_FLAGS  	    "${CMAKE_CXX_FLAGS} -std=c++26 --reflection")
+message(${CMAKE_CXX_FLAGS})
+
+
 add_executable(Tests t/test.cpp)
 add_executable(SetterGetterTests t/getter_setter.cpp)
 add_executable(JsonTests t/json.cpp)
 add_executable(NJsonTests t/njson.cpp)
 add_executable(XmlTests t/xml.cpp)
+add_executable(SerializeTests t/serialize.cpp)
 
 ############################################
 # libs for tests
 ############################################
 
-target_link_libraries(Tests ${LIBS} ${BACKEND} ${OSLIBS} )
-target_link_libraries(SetterGetterTests ${LIBS} ${BACKEND} ${OSLIBS} )
-target_link_libraries(JsonTests  ${LIBS} ${BACKEND} ${OSLIBS} )
-target_link_libraries(NJsonTests  ${LIBS} ${BACKEND} ${OSLIBS} )
-target_link_libraries(XmlTests  ${LIBS} ${BACKEND} ${OSLIBS} )
+target_link_libraries(Tests ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS}  )
+target_link_libraries(SetterGetterTests ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
+target_link_libraries(JsonTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
+target_link_libraries(NJsonTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
+target_link_libraries(XmlTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
+target_link_libraries(SerializeTests  ${LIBS} ${EXPAT} ${BACKEND} ${OSLIBS} )
 
 
 ############################################
@@ -204,6 +210,7 @@ add_test(NAME SetterGetterTests COMMAND SetterGetterTests)
 add_test(NAME JsonTests COMMAND JsonTests)
 add_test(NAME NJsonTests COMMAND NJsonTests)
 add_test(NAME XmlTests COMMAND XmlTests)	
+add_test(NAME SerializeTests COMMAND SerializeTests)	
 
 
 endif()

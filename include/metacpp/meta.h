@@ -9,6 +9,15 @@
 #include <sstream>
 #include "metacpp/traits.h"
 
+#include <meta>
+#include <type_traits>
+#include <tuple>
+#include <vector>
+#include <set>
+#include <map>
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 namespace meta {
@@ -48,6 +57,28 @@ namespace meta {
 	{
 		return xmlns(p,n,true);
 	}
+	
+template<class T>
+struct xml_namespace
+{
+        static constexpr xmlns get()
+        {
+                static constexpr bool b = has_ns<T>();
+                if constexpr(b)
+                {
+                        return T::xml_namespace;
+                }
+                static constexpr xmlns default_ns;
+                return default_ns;
+        }
+};
+
+template<class T>
+constexpr xmlns get_namespace()
+{
+        static constexpr xmlns ns = xml_namespace<T>::get();
+        return ns;
+} 	
 
 	class EntityName
 	{
@@ -451,10 +482,67 @@ namespace impl {
 			return P::meta();
 		}
 
+		template<int I,int SIZE, class P, class TUP>
+		static constexpr auto generate_meta(TUP t)
+		{
+			constexpr auto ctx{std::meta::access_context::unchecked()};
+			static constexpr auto members{std::define_static_array(std::meta::members_of(^^P, ctx))};
+
+			constexpr std::meta::info member = members.at(I);
+			if constexpr (std::meta::is_nonstatic_data_member(member)) 
+			{
+				constexpr auto type{std::meta::type_of(member)};
+				constexpr typename[:type:] P::* mptr = & [:member:];
+				constexpr auto tup = std::make_tuple(
+					meta::member(
+						std::meta::identifier_of(member).data(),
+						mptr
+					)
+				);
+				if constexpr ( I+1 == SIZE ) 
+				{
+					return std::tuple_cat(t,tup);
+				}
+				else 
+				{
+					return generate_meta<I+1,SIZE,T>(std::tuple_cat(t,tup));        
+				}
+			}
+			else
+			{
+				if constexpr ( I+1 == SIZE ) 
+				{
+					return t;
+				}
+				else 
+				{
+					return generate_meta<I+1,SIZE,T>( t );
+				}
+			}
+		}
+
+
 		template<class P>
 		static constexpr auto meta_of(typename std::enable_if<std::is_class<P>::value && !impl::has_meta<P>::value>::type* = nullptr)
 		{
-			return std::tuple<>();
+			constexpr auto ctx{std::meta::access_context::unchecked()};
+			static constexpr auto members{std::define_static_array(std::meta::members_of(^^P, ctx))};
+
+			constexpr auto type_name {std::meta::display_string_of(std::meta::decay(^^P))};
+			constexpr size_t pos = type_name.find_last_of("::");
+			constexpr const char * n = pos == std::string::npos 
+				? type_name.data()
+				: type_name.data() + pos + 1;
+
+			constexpr auto s = members.size();
+//			constexpr std::tuple<> start;
+			constexpr auto start = std::make_tuple(
+				meta::entity_root( n, get_namespace<P>() )
+			);
+
+			return generate_meta<0,s,P>(start);
+		
+//			return std::tuple<>();
 		}
 
 	public:

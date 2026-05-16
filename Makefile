@@ -1,4 +1,4 @@
-CXX = g++
+CXX = /opt/gcc16/install/bin/g++
 DESTDIR=/
 PREFIX=/usr/local
 

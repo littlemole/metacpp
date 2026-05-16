@@ -527,7 +527,7 @@ Json::Value toJson( std::vector<T>& t)
 		v.append(item["dummy"]);
 	}
 
-	auto r = meta::entity_root<std::vector<T>>();
+	auto r = meta::entity_root<T>();
 	if (r.name)
 	{
 		root[r.name] = v;

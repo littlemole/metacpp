@@ -14,6 +14,7 @@ using namespace meta;
 class XmlTest : public ::testing::Test {
 protected:
 
+
 	static void SetUpTestCase() {
 
 	}
@@ -31,9 +32,13 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+namespace TestX 
+{
 class TestObj
 {
 public:
+//	static constexpr meta::xmlns xml_namespace = meta::xmlns("o","http://oha7.org");
+
 	int x;
 	std::string txt;
 
@@ -49,6 +54,27 @@ public:
 };
 
 
+}
+/*
+template<>
+struct meta::xml_namespace<TestX::TestObj>
+{
+	constexpr static meta::xmlns get()
+	{
+		constexpr static meta::xmlns ns{ "ui", "http://oha7.org/"};
+		return ns;
+	}
+};
+*/
+/*
+template<>
+constexpr meta::xmlns meta::get_namespace<TestX::TestObj>()
+{
+	constexpr static meta::xmlns ns{ "http://oha7.org/"};
+	return ns;	
+}
+*/
+/*
 template<>
 struct meta::Data<TestObj>
 {
@@ -63,6 +89,7 @@ struct meta::Data<TestObj>
 		);
 	}
 };
+*/
 
 class TestObj2
 {
@@ -146,7 +173,7 @@ class ArrayTest
 {
 public:
 
-	std::vector<TestObj> test;
+	std::vector<TestX::TestObj> test;
 
 	constexpr static auto meta() 
 	{
@@ -159,7 +186,7 @@ public:
 
 
 template<>
-class meta::Data<std::vector<TestObj>>
+class meta::Data<std::vector<TestX::TestObj>>
 {
 public:
 
@@ -174,7 +201,7 @@ public:
   
 TEST_F(XmlTest, simpleXml)
 {
-	TestObj t{ 42, "hello\"<&> meta" };
+	TestX::TestObj t{ 42, "hello\"<&> meta" };
 
 	auto xml = toXml(t);
 
@@ -183,7 +210,7 @@ TEST_F(XmlTest, simpleXml)
 
 	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<TEST><x>42</x><txt>hello\"&lt;&amp;&gt; meta</txt></TEST>",s.c_str());
     
-	TestObj t2;
+	TestX::TestObj t2;
 	fromXml(s, t2);
 
 	EXPECT_STREQ("hello\"<&> meta",t2.txt.c_str());
@@ -273,7 +300,7 @@ TEST_F(XmlTest, simpleXml5)
 
 TEST_F(XmlTest, simpleXmlVector)
 {
-	TestObj t{ 42, "hello meta" };
+	TestX::TestObj t{ 42, "hello meta" };
     ArrayTest at;
     at.test.push_back(t);
     at.test.push_back(t);
@@ -298,9 +325,9 @@ TEST_F(XmlTest, simpleXmlVector)
 
 TEST_F(XmlTest, xmlVector)
 {
-	TestObj t{ 42, "hello meta" };
+	TestX::TestObj t{ 42, "hello meta" };
 
-    std::vector<TestObj> v;
+    std::vector<TestX::TestObj> v;
     v.push_back(t);
     v.push_back(t);
 
@@ -309,7 +336,7 @@ TEST_F(XmlTest, xmlVector)
 
 	EXPECT_STREQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<vector><TEST><x>42</x><txt>hello meta</txt></TEST><TEST><x>42</x><txt>hello meta</txt></TEST></vector>",s.c_str());
 
-    std::vector<TestObj> v2;
+    std::vector<TestX::TestObj> v2;
 	fromXml(xml, v2);
 
 	xml = toXml(v2);
