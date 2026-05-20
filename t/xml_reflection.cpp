@@ -400,7 +400,7 @@ public:
 	std::vector<std::string> tags;
 };
 
-
+/*
 template<>
 struct meta::Data<User>
 {
@@ -415,7 +415,7 @@ struct meta::Data<User>
 				);
 		}
 };
-
+*/
 
 
 TEST_F(XmlRefTest, toXml) 
@@ -427,7 +427,7 @@ TEST_F(XmlRefTest, toXml)
 
 	std::cout << s << std::endl;
 
-	EXPECT_EQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<User><username>mike</username><login>littlemole</login><pwd>secret</pwd><tags>one</tags><tags>two</tags><tags>three</tags></User>",s);
+	EXPECT_EQ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\r\n<User><username>mike</username><tags>one</tags><tags>two</tags><tags>three</tags><login>littlemole</login><pwd>secret</pwd></User>", s);
 
 	User other;
 	fromXml(xml,other);

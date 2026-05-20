@@ -85,7 +85,7 @@ namespace impl {
 	{
 		constexpr static bool value = true;
 	};
-	
+		
 } // end namespace impl
 
 template<class T>
