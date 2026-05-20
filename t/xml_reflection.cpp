@@ -381,6 +381,8 @@ public:
 
 	std::string login;
 	std::string pwd;
+private:
+	std::string nope;	
 };
 
 

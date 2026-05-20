@@ -542,7 +542,7 @@ consteval auto const tupelize();
 template<int I,class T,class TUP>
 consteval auto const tupelize_base(const TUP tup)
 {
-    constexpr auto ctx = std::meta::access_context::unprivileged().via(^^T);
+    constexpr auto ctx = std::meta::access_context::unprivileged();//.via(^^T);
     constexpr static auto bases = std::define_static_array(
         std::meta::bases_of(^^T,ctx)
     );
@@ -601,102 +601,9 @@ consteval auto const tupelize()
 			return P::meta();
 		}
 
-		template<int I,int SIZE, class P, class TUP>
-		static constexpr auto generate_meta(TUP t)
-		{
-			constexpr auto ctx{std::meta::access_context::unchecked()};
-			static constexpr auto members{std::define_static_array(std::meta::members_of(^^P, ctx))};
-
-			constexpr std::meta::info member = members.at(I);
-			if constexpr (std::meta::is_nonstatic_data_member(member)) 
-			{
-				constexpr auto type{std::meta::type_of(member)};
-				constexpr typename[:type:] P::* mptr = & [:member:];
-				constexpr auto tup = std::make_tuple(
-					meta::member(
-						std::meta::identifier_of(member).data(),
-						mptr
-					)
-				);
-				if constexpr ( I+1 == SIZE ) 
-				{
-					return std::tuple_cat(t,tup);
-				}
-				else 
-				{
-					return generate_meta<I+1,SIZE,T>(std::tuple_cat(t,tup));        
-				}
-			}
-			else
-			{
-				if constexpr ( I+1 == SIZE ) 
-				{
-					return t;
-				}
-				else 
-				{
-					return generate_meta<I+1,SIZE,T>( t );
-				}
-			}
-		}
-
-		template<int I, class P,class TUP>
-		static constexpr auto generate_base_meta(TUP t)
-		{
-			constexpr auto ctx{std::meta::access_context::unchecked()};
-			static constexpr auto bases{std::define_static_array(std::meta::bases_of(^^P, ctx))};
-			constexpr auto nbases = bases.size();
-
-			
-			if constexpr( I < nbases )
-			{
-				constexpr std::meta::info base = bases.at(I);
-				constexpr auto bt = std::meta::type_of(base);
-				typedef typename [: bt :] base_type;
-//				if constexpr( std::is_class_v<base_type> )
-				{
-					static constexpr auto members{std::define_static_array(std::meta::members_of(^^base_type, ctx))};
-					constexpr auto size = members.size();
-					constexpr auto tup = std::make_tuple();
-					constexpr auto m = generate_meta<0,size,base_type>(tup);
-					
-					auto tt = std::tuple_cat(t,m);
-				
-					return generate_base_meta<I+1,P>(tt);
-				}
-//				else
-				{
-//					return generate_base_meta<I+1,P>(t);
-				}
-			}
-			else
-			{
-				return t;
-			}			
-		}
-
 		template<class P>
 		static constexpr auto meta_of(typename std::enable_if<std::is_class<P>::value && !impl::has_meta<P>::value>::type* = nullptr)
 		{
-//			constexpr auto ctx{std::meta::access_context::unchecked()};
-//			static constexpr auto members{std::define_static_array(std::meta::members_of(^^P, ctx))};
-/*
-			constexpr auto type_name {std::meta::display_string_of(std::meta::decay(^^P))};
-			constexpr size_t pos = type_name.find_last_of("::");
-			constexpr const char * n = pos == std::string::npos 
-				? type_name.data()
-				: type_name.data() + pos + 1;
-*/
-//			constexpr auto s = members.size();
-//			constexpr std::tuple<> start;
-//			static constexpr auto start = std::make_tuple(
-//				meta::entity_root( n, get_namespace<P>() )
-//			);
-
-//			return generate_meta<0,s,P>(start);
-//			constexpr auto r = generate_meta<0,s,P>(start);
-//			return generate_base_meta<0,P>(r);
-			
 			return tupelize<P>();
 		}
 
