@@ -470,14 +470,15 @@ namespace impl {
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	
+namespace impl {
 
 template<class N, class T,int I = 0>
 consteval auto find( N n, T tup)
 {
-    constexpr static auto size = std::tuple_size_v<decltype(tup())>;
+    constexpr auto size = std::tuple_size_v<decltype(tup())>;
     if constexpr( I < size ) 
     {
-        constexpr static auto v = std::get<I>(tup());
+        constexpr auto v = std::get<I>(tup());
         if constexpr( n() == v.name )
         {
             return true;
@@ -500,12 +501,12 @@ consteval auto const tupelize(const TUP tup)
     constexpr static auto members = std::define_static_array(
         std::meta::nonstatic_data_members_of(^^T,CTX)
     );
-    constexpr static auto size = members.size();
+    constexpr auto size = members.size();
     if constexpr( I < size )
     {
-        constexpr static auto member = members.at(I);
+        constexpr auto member = members.at(I);
         constexpr auto mname = std::meta::identifier_of(member);
-        constexpr static bool is_shadowed = find(
+        constexpr bool is_shadowed = find(
             [&mname](){ return mname;},
             tup
         );
@@ -525,7 +526,7 @@ consteval auto const tupelize(const TUP tup)
 		)
 	    );
 
-            constexpr static auto rt = std::tuple_cat(tup(),name_tup);
+            constexpr auto rt = std::tuple_cat(tup(),name_tup);
 
             return tupelize<I+1,CTX,T>([&](){return rt;});
         }
@@ -539,6 +540,7 @@ consteval auto const tupelize(const TUP tup)
 template<class T>
 consteval auto const tupelize();
 
+
 template<int I,class T,class TUP>
 consteval auto const tupelize_base(const TUP tup)
 {
@@ -546,21 +548,22 @@ consteval auto const tupelize_base(const TUP tup)
     constexpr static auto bases = std::define_static_array(
         std::meta::bases_of(^^T,ctx)
     );
-    constexpr static auto size = bases.size();
+    
+    constexpr auto size = bases.size();
 
     if constexpr( I < size )
     {
-        constexpr static auto base = bases.at(I);
-        constexpr static auto bt = std::meta::type_of(base);
+        constexpr auto base = bases.at(I);
+        constexpr auto bt = std::meta::type_of(base);
         typedef typename [: bt :] base_type;
 
-        constexpr static auto t1 = tupelize<0,ctx,base_type>(tup);
+        constexpr auto t1 = tupelize<0,ctx,base_type>(tup);
 
-        constexpr static auto t2 = tupelize_base<0,base_type>(
+        constexpr auto t2 = tupelize_base<0,base_type>(
             [&](){ return t1; }
         );
 
-        constexpr static auto t3 = tupelize_base<I+1,T>(
+        constexpr auto t3 = tupelize_base<I+1,T>(
             [&](){ return t2; }
         );
 
@@ -576,16 +579,17 @@ template<class T>
 consteval auto const tupelize()
 {
     constexpr auto ctx = std::meta::access_context::unprivileged();
-    constexpr static auto const tup = std::make_tuple();
-    constexpr static auto const r1 = tupelize<0,ctx,T>(
+    constexpr auto const tup = std::make_tuple();
+    constexpr auto const r1 = tupelize<0,ctx,T>(
         [&](){ return tup; }
     );
-    constexpr static auto const r2 = tupelize_base<0,T>(
+    constexpr auto const r2 = tupelize_base<0,T>(
         [&](){ return r1; }
     );
     return r2; 
 }
 	
+} // end namespace impl
 	
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -604,7 +608,7 @@ consteval auto const tupelize()
 		template<class P>
 		static constexpr auto meta_of(typename std::enable_if<std::is_class<P>::value && !impl::has_meta<P>::value>::type* = nullptr)
 		{
-			return tupelize<P>();
+			return impl::tupelize<P>();
 		}
 
 	public:
