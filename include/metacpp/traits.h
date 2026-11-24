@@ -1,6 +1,6 @@
 #ifndef _GEF_GUARD_DEFINE_METACPP_TRAITS_H_DEF_GUARD_
 #define _GEF_GUARD_DEFINE_METACPP_TRAITS_H_DEF_GUARD_
-
+/*
 #include <functional>
 #include <set>
 #include <type_traits>
@@ -69,6 +69,52 @@ namespace impl {
 
 	template<class T>
 	using has_entity_root = std::experimental::is_detected<has_entity_root_t, T>;
+
+}}
+*/
+
+namespace meta {
+namespace impl {
+
+template<class T>
+concept has_meta_concept = requires
+{
+    T::meta();
+};
+
+template<class T, class Enable = void>
+struct has_meta
+{
+    static constexpr bool value = false;
+};
+
+template<class T>
+requires (has_meta_concept<T>)
+struct has_meta<T,void>
+{
+    static constexpr bool value = true;
+};
+
+template<class T>
+concept has_entity_root_concept = requires
+{
+    T::entity_root();
+};
+
+template<class T, class Enable = void>
+struct has_entity_root
+{
+    static constexpr bool value = false;
+};
+
+template<class T>
+requires (has_entity_root_concept<T>)
+struct has_entity_root<T,void>
+{
+    static constexpr bool value = true;
+};
+
+
 
 }}
 
